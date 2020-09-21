@@ -2,10 +2,15 @@ const CurvePath = require('./curve-path.js');
 
 
 class NodeOfCurve{
-	constructor(A, B, segment){
+	constructor(A, B, multipler){
 		this.A = A;
-		this.B = B;
-		this.segment = segment;
+		if(multipler && multipler !== 1){
+			let V = B.sub(A);
+			this.B = V.mul(multipler).add(A);
+		}
+		else{
+			this.B = B;
+		}
 	}
 	/**
 	 * Направляющий вектор касательной к узлу

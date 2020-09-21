@@ -8,6 +8,8 @@ $$J_{n,i} = \binom{n}{i} t^i (1-t)^{n-i}.$$
 
 Действует только при соглащении, что $0^0 = 1$.
 
+$$P_3(t) = \sum_{i=0}^3 B_i J_{n,i}(t).$$
+
 $$J_{3,0} = (1-t)^3;$$
 $$J_{3,1} = 3 t (1-t)^2;$$
 $$J_{3,2} = 3 t^2 (1-t);$$
@@ -15,7 +17,7 @@ $$J_{3,3} = t^3.$$
 
 ## Первая производная
 
-$$\dot P(t) = \sum_{i=0}^n B_i \dot J_{n,i}(t).$$
+$$\dot P_3(t) = \sum_{i=0}^3 B_i \dot J_{3,i}(t).$$
 
 $$\dot J_{3,0} = -3 (1-t)^2;$$
 $$\dot J_{3,1} = 3 ((1-t)^2 - 2t(1-t));$$
@@ -35,65 +37,35 @@ $$\frac {\dot P_3}{3} = \sum_{i=0}^2 \binom{2}{i} t^i(1-t)^{2-i}(B_{i+1}-B_i);$$
 Введём
 $$\dot B_i = B_{i+1}-B_i.$$
 
-$$\frac {\dot P_3}{3} = P_{2,\dot B};$$
+$$\dot P_3 = 3 P_{2,\dot B};$$
 
-## Разбиение кривой Безье на две кривые того же порядка
+## Вторая производная
 
-$P_B$ - исходная кривая, $P_C$ и $P_D$ - её части, разбитые в пропорции $t^\star$.
+$$\dot P_3 = 3 P_{2,\dot B};$$
+$$\ddot P_3 = 3 \dot P_{2,\dot B};$$
 
+$$J_{2,0} = (1-t)^2;$$
+$$J_{2,1} = 2 t(1-t) = 2(t-t^2);$$
+$$J_{2,2} = t^2.$$
 
-$$
-\left\{
-\begin{gathered}
-P_C(0) = P_B(0),\\
-P_C(1) = P_B(t^\star),\\
-P_D(0) = P_B(t^\star),\\
-P_D(1) = P_B(1),\\
-\dot P_C(0) = \dot P_B(0),\\
-\dot P_C(1) = \dot P_B(t^\star),\\
-\dot P_D(0) = \dot P_B(t^\star),\\
-\dot P_D(1) = \dot P_B(1);
-\end{gathered}
-\right.
-$$
+$$dot J_{2,0} = -2(1-t);$$
+$$dot J_{2,1} = 2 (1-2t);$$
+$$dot J_{2,2} = 2t.$$
 
-$$\dot P_B = 3 P_{\dot B} = 3\sum_{i=0}^2 \binom{2}{i} t^i(1-t)^{2-i}(B_{i+1}-B_i);$$
-$$\dot P_B(0) = 3\sum_{i=0}^2 \binom{2}{i} 0^i(1-0)^{2-i}(B_{i+1}-B_i) = 3 (B_1-B_0);$$
-$$\dot P_B(1) = 3\sum_{i=0}^2 \binom{2}{i} 1^i(1-1)^{2-i}(B_{i+1}-B_i) = 3 (B_3-B_2);$$
-$$\dot P_B(t^\star) = 3 P_{\dot B}(t^\star).$$
+$$\dot P_{2,\dot B} = -2(1-t)\dot B_0 + 2 (1-2t) \dot B_1 + 2t \dot B_2;$$
+$$\frac{\dot P_{2,\dot B}}{2} = -(1-t)\dot B_0 + (1-t) \dot B_1 + (-t) \dot B_1 + t \dot B_2;$$
+$$\frac{\dot P_{2,\dot B}}{2} = (1-t) (\dot B_1 - \dot B_0) + t (\dot B_2 - \dot B_1);$$
+$$\dot P_{2,\dot B} = 2 P_{1,\ddot B}.$$
 
-$$\dot P_C = 3 \sum_{i=0}^2 \binom{2}{i} t^i(1-t)^{2-i}(C_{i+1}-C_i);$$
-$$\dot P_C(0) = 3 (C_1-C_0);$$
-$$\dot P_C(1) = 3 (C_3-C_2).$$
+$$\ddot P_{3,B} = 6 P_{1,\ddot B};$$
 
-$$\dot P_D = 3\sum_{i=0}^2 \binom{2}{i} t^i(1-t)^{2-i}(D_{i+1}-D_i);$$
-$$\dot P_D(0) = 3 (D_1-D_0);$$
-$$\dot P_D(1) = 3 (D_3-D_2).$$
+## Кривизна
 
-$$
-\left\{
-\begin{gathered}
-C_0 = B_0,\\
-C_3 = P_B(t^\star),\\
-D_0 = P_B(t^\star),\\
-D_3 = B_3,\\
-3 (C_1-C_0) = 3 (B_1-B_0),\\
-3 (C_3-C_2) = 3 P_{\dot B}(t^\star),\\
-3 (D_1-D_0) = 3 P_{\dot B}(t^\star),\\
-3 (D_3-D_2) = 3 (B_3-B_2);\\
-\end{gathered}
-\right.
-\Rightarrow
-\left\{
-\begin{gathered}
-C_0 = B_0,\\
-C_1 = B_1,\\
-C_3 = P_B(t^\star),\\
-D_1 = P_B(t^\star),\\
-D_2 = B_2,\\
-D_3 = B_3,\\
-C_2 = C_3 - P_{\dot B}(t^\star),\\
-D_1 = D_0 + P_{\dot B}(t^\star).\\
-\end{gathered}
-\right.
+$$k=\frac{\dot P \times \ddot P}{\left|\dot P\right|^3}.$$
+
+$$k_3
+=\frac{\dot P_{3,B} \times \ddot P_{3,B}}{\left|\dot P_{3,B}\right|^3}
+=\frac{(3 P_{2,\dot B}) \times (6 P_{1,\ddot B})}{\left|3 P_{2,\dot B}\right|^3}
+=\frac{18(P_{2,\dot B}) \times (P_{1,\ddot B})}{27\left|P_{2,\dot B}\right|^3}
+=\frac{2(P_{2,\dot B}) \times (P_{1,\ddot B})}{3\left|P_{2,\dot B}\right|^3}
 $$

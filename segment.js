@@ -21,7 +21,7 @@ class Segment{
 		if(BA){
 			points.reverse();
 		}
-		return new Curve(points);
+		return new Curve(...points);
 	}
 	
 	trace(node, state){

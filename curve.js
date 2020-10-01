@@ -1,4 +1,4 @@
-const bezier = require('./bezier.js');
+const bezier = require('./bezier/base.js');
 
 /**
  * Представляет кривую безье, заданную точками, которую можно отрисовать в разных форматах

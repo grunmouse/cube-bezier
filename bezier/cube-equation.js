@@ -114,3 +114,5 @@ function cube(a, b, c, d){
 		return square(b, c, d);
 	}
 }
+
+module.exports = cube;

@@ -1,4 +1,4 @@
-const bezier = require('../bezier.js');
+const bezier = require('../bezier/base.js');
 
 const {Vector2} = require("@grunmouse/math-vector");
 

@@ -58,13 +58,16 @@ class NodeOfCurve{
 		return new NodeOfCurve(N, B);
 	}
 	
+	/**
+	 * Делает два узла сиблингами друг друга
+	 */
 	connect(node){
 		this.sibling = node;
 		node.sibling = this;
 	}
 	
-	makePath(start){
-		let {startNode, curves, close} = this.trace();
+	makePath(start, stop){
+		let {startNode, curves, close} = this.trace(stop);
 		return new CurvePath(start || startNode.A, curves, close);
 	}
 	
@@ -75,6 +78,9 @@ class NodeOfCurve{
 	trace(state){
 		if(!state){
 			state = {start:this, curves:[]};
+		}
+		else if(typeof state === 'function'){
+			state = {start:this, curves:[], stop:state};
 		}
 		else if(state.start === this){
 			state.close = true;

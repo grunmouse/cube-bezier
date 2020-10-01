@@ -1,5 +1,8 @@
 const {recursiveJoin} = require('@grunmouse/strings');
 
+/**
+ * Представляет путь, состоящий из кривых Безье и методы его отрисовки в разных форматах
+ */
 class CurvePath{
 	/**
 	 * @param start :Vector2

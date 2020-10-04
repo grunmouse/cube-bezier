@@ -1,4 +1,5 @@
 const Curve = require('./curve.js');
+const Node = require('./node-of-curve.js');
 
 /**
  * Представляет кубическую кривую Безье, заданную двумя узлами с оттяжками,
@@ -12,33 +13,64 @@ class Segment{
 		
 		nodeA.segment = this;
 		nodeB.segment = this;
+	}
+	
+	get points(){
+		const {nodeA, nodeB} = this;
+		return new Curve(nodeA.A, nodeA.B, nodeB.B, nodeB.A);
+	}
+	
+	clone(){
+		return new Segment(this.nodeA.clone(), this.nodeB.clone());
+	}
+	
+	/**
+	 * Метод с побочным эффектом!
+	 * Меняет порядок обхода сегмента, не меняя его формы
+	 */
+	reverse(){
+		const {nodeA, nodeB} = this;
+		this.nodeA = nodeB;
+		this.nodeB = nodeA;
 		
-		this.points = [nodeA.A, nodeA.B, nodeB.B, nodeB.A];
+		return this;
 	}
 	
 	curve(BA){
-		let points = this.points.slice(0);
+		let points = this.points;
 		if(BA){
 			points.reverse();
 		}
-		return new Curve(...points);
+		return points;
+	}
+	
+	/**
+	 * Возвращает аргументы, описывающие условия обхода сегмента, начиная с переданного узла
+	 */ 
+	traceState(node){
+		const {nodeA, nodeB} = this;
+		if(node === nodeA){
+			return [nodeA, nodeB, false, this];
+		}
+		else if(node === nodeB){
+			return [nodeB, nodeA, true, this];
+		}
+		else{
+			return [node, undefined, undefined, node.segment];
+		}
 	}
 	
 	trace(node, state){
-		let fin;
-		if(node === this.nodeA){
-			fin = this.nodeB;
-			state.curves.push(this.curve());
-		}
-		else if(node === this.nodeB){
-			fin = this.nodeA;
-			state.curves.push(this.curve(true));
+		let [_, fin, BA, segment] = this.traceState(node);
+		if(fin){
+			state.curves.push(this.curve(BA));
+			//console.log(state.curves.length);
 		}
 		else{
 			throw new Error('Node is not a curves end');
 		}
 		
-		let stop = state.stop && state.stop(fin);
+		let stop = !state.stop || state.stop(fin);
 		
 		if(fin.sibling && stop){
 			return fin.sibling.trace(state);

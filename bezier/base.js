@@ -43,6 +43,19 @@ function delta(arr){
 }
 
 /**
+ * Находит массив разностей точек по кольцу
+ */
+function odelta(arr){
+	let len = arr.length-1;
+	let res = [];
+	for(let i=0;i<len; ++i){
+		res[i] = arr[i+1][SUB](arr[i]);
+	}
+	res[len] = arr[0][SUB](arr[len]);
+	return res;
+}
+
+/**
  * Находит массив опорных точек производной исходной линии
  */
 function dot(arr){
@@ -143,6 +156,7 @@ module.exports = {
 	reduce,
 	point,
 	delta,
+	odelta,
 	dot,
 	split,
 	splits,

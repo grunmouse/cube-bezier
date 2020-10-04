@@ -20,7 +20,7 @@ class CurvePath{
 	 */
 	toSVG(){
 		let {start, curves, close} = this;
-		let code = 'M ' + start.join(",")
+		let code = 'M ' + start.join(",") + ' '
 			+ curves.map((curve)=>('c '+recursiveJoin(curve.relativeCDR(), [' ', ',']))).join(' ');
 			
 		if(close){

@@ -21,6 +21,14 @@ class NodeOfCurve{
 	}
 	
 	/**
+	 * Создать копию узла
+	 */
+	clone(){
+		let {A, B} = this;
+		return new NodeOfCurve(A, B);
+	}
+	
+	/**
 	 * Построить вектор, сонаправленный с V, длиной s.
 	 * Если s===0 - вернуть V
 	 */
@@ -66,13 +74,68 @@ class NodeOfCurve{
 		node.sibling = this;
 	}
 	
-	makePath(start, stop){
-		let {startNode, curves, close} = this.trace(stop);
-		return new CurvePath(start || startNode.A, curves, close);
-	}
-	
 	get isEnd(){
 		return !!this.segment && !this.sibling
+	}
+
+	/**
+	 * 
+	 * [curNode, alterNode, BA, segment]
+	 */	
+	traceState(){
+		return this.segment ? this.segment.traceState(this) : [this];
+	}
+	
+	/**
+	 * Итерируется по цепочке сегментов, возвращая состояния обхода
+	 */
+	*itrState(){
+		let end;
+		let current = this;
+		while(current){
+			let state = current.traceState();
+			let [_, fin] = state;
+			if(fin){
+				current = fin.sibling;
+				yield state;
+			}
+		}
+	}
+	
+	/**
+	 * Итерируется по цепочке сегментов, исключая повторный проход по кольцу
+	 */
+	*itrStateOnce(){
+		for(let state of this.itrState()){
+			if(state[0] === this){
+				break;
+			}
+			yield state;
+		}
+	}
+	
+	findEnd(){
+		let end;
+		for(let [_, fin] of this.itrStateOnce()){
+			end = fin;
+		}
+		return end;
+	}
+	
+	getCurves(stop){
+		const result = {start:this, curves:[]};
+		for(let [cur, fin, BA, segment] of this.itrState()){
+			if(cur === this){
+				result.close = true;
+				break;
+			}
+			result.end = fin;
+			result.curve.push(segment.curve(BA));
+			if(stop && stop(fin)){
+				break;
+			}
+		}
+		return result;
 	}
 	
 	trace(state){
@@ -91,6 +154,11 @@ class NodeOfCurve{
 			return this.segment.trace(this, state);
 		}
 		return state;
+	}
+
+	makePath(start, stop){
+		let {startNode, curves, close} = this.trace(stop);
+		return new CurvePath(start || startNode.A, curves, close);
 	}
 	
 }

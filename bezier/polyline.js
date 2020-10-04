@@ -1,5 +1,6 @@
 const  {
 	delta,
+	odelta,
 	proj
 } = require('./base.js');
 
@@ -121,10 +122,130 @@ function rectangleArea(B){
 /**
  * Проверяет, пересекаются ли прямоугольные области, заданные угловыми точками
  */
-function intersectRectgle(A, B, C, D){
+function isIntersectRectagle(A, B, C, D){
 	//Чтобы прямоугольные области пересекались, нужно чтобы пересекались их проекции на каждую ось
 	return A.every((_, i)=>{
 		//проекции пересекаются, если одна из крайних точек одного отрезка находится внутри на другого отрезка
 		return isIn(A[i], C[i], D[i]) || isIn(B[i], C[i], D[i]);
 	});
+}
+
+/**
+ * Возвращает положительное значение, если поворот от a к b - против часовой стрелки, и 
+ * отрицательное, в противоположном случае, ноль, если их разность кратна 2pi
+ */
+function angleSub(a, b){
+	let d = b - a; //Разность узлов, как она есть
+	//Надо получить разность от -PI до PI
+	while(d>Math.PI){
+		d -= 2*Math.PI;
+	}
+	while(d<-Math.PI){
+		d += 2*Math.PI;
+	}
+	return d;
+}
+
+function isInTriangle(R, A, B, C){
+	const ABC = [A, B, C];
+	const abc = odelta(ABC);
+	let s = ABC.map((A, i)=>(
+		abc[i].cross(R.sub(A))
+	));
+	
+	return s.every((a)=>(a>0)) || s.every((a)=>(a<0));
+}
+
+/**
+ * Находит выпуклую оболочку четырёхугольника
+ */
+function convex(A, B, C, D){
+	let S = [A, B, C, D];
+	for(let i=0; i<4; ++i){
+		let [A, B, C, R] = S;
+		if(isInTriangle(R, A, B, C)){
+			S.pop();
+			return S;
+		}
+		S.unshift(S.pop());
+	}
+	//Это не треугольник, найдём порядок вершин
+	if(intersectLinePart(A, B, C, D)){
+		//AB и CD пересекаются, мы нашли диагонали
+		return [A, C, B, D];
+	}
+	else{
+		//AB и CD - несмежные стороны
+		if(intersectLinePart(A, C, B, D)){
+			//AC и BD пересекаются, мы нашли диагонали
+			return [A, B, C, D];
+		}
+		else{
+			//AC и BD - тоже несмежные стороны, мы нашли четыре стороны
+			return [A, B, D, C];
+		}
+	}
+}
+
+function pairs(arr){
+	let len = arr.length-1;
+	let res = [];
+	for(let i=0;i<len; ++i){
+		res.push([arr[i],arr[i+1]]);
+	}
+	return res;
+}
+function *opairs(arr){
+	let len = arr.length-1;
+	let res = [];
+	for(let i=0;i<len; ++i){
+		res.push([arr[i],arr[i+1]]);
+	}
+	res.push([arr[len],arr[0]]);
+	return res;
+}
+
+ 
+/**
+ * Проверяет выпуклые оболочки на пересечение
+ */
+function intersectConvex(M, N){
+	let cross = [];
+	const m = opairs(M), n = opairs(N);
+	let sn = [], sm = [];
+	m.forEach(([A,B], i)=>{
+		sm[i]=[];
+		let AB = B.sub(A);
+		n.forEach(([C,D],j)=>{
+			sn[j] = sn[j] || [];
+			let R = intersectLinePart(A,B,C,D);
+			if(R){
+				cross.push(R);
+			}
+			let CD = D.sub(C);
+			let AC = C.sub(A);
+			sn[j][i] = AB.cross(AC); //Положение точки C относительно ребра AB
+			sm[i][j] = CD.cross(AC); //Положение точки A относительно ребра CD
+		});
+	});
+	
+	//Попадание точек N в оболочку M
+	const Ns = new Set();
+	const Ms = new Set();
+	sn.forEach((s, i)=>{
+		if(s.every((a)=>(a>=0)) || s.every((a)=>(a<=0))){
+			Ns.add(N[i]);
+		}
+	});
+	//Попадание точек M в оболочку N
+	sm.forEach((s, i)=>{
+		if(s.every((a)=>(a>=0)) || s.every((a)=>(a<=0))){
+			Ms.add(M[i]);
+		}
+	});
+	
+	return {
+		cross,
+		Ns, Ms
+	};
 }

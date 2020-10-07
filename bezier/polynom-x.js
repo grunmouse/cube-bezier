@@ -83,14 +83,12 @@ class PolynomX{
 			let y = this._initRoots(epsilon);
 			let r, q = this, count = this.deg - 3;
 			let roots = [];
-			for(let i = 0; i<min(count, y.length); --i){
-				let x = this._Newton(y[i], epsilon/10);
+			for(let i = 0; i<min(count, y.length); ++i){
+				let x = this._Newton(y[i], epsilon);
 				
-				({r, q} = this.div(new PolynomX(-x,1)));
+				({r, q} = q.div(new PolynomX(-x,1)));
 				
-				console.log(r);
 				[r, q] = [r,q].map(a=>a.ignoreEpsilon(epsilon));
-				console.log(r);
 				
 				if(!r.isZero()){
 					throw new Error('Нужно улучшить корень');
@@ -100,7 +98,7 @@ class PolynomX{
 			}
 			
 			if(q.deg<=3){
-				roots = roots.concat(q.realRoots(epsilon));
+				roots = roots.concat(q.realRoots(epsilon)).sort();
 			}
 			return roots;
 		}
@@ -241,12 +239,12 @@ class PolynomX{
 //console.log(a.mul(a));
 //let a = new PolynomX(0,0,2);
 
-let x = Array.from({length:4}, Math.random).sort(), epsilon = 1e-6;
+let x = Array.from({length:9}, Math.random).sort(), epsilon = 1e-6;
 
 let p = x.reduce((p, x)=>(p.mulnew(-x,1)), new PolynomX(1));
 
 let r = p.realRoots(epsilon);
 
 console.log(x);
-console.log(r);
+console.log(r.map((r,i)=>(r-x[i])));
 module.exports = PolynomX;

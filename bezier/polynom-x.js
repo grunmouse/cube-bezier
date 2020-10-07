@@ -105,7 +105,7 @@ class PolynomX{
 			return roots;
 		}
 	}
-
+	
 	/**
 	 * Определяет количество рациональных корней и выбирает для каждого начальное приближение
 	 */
@@ -241,12 +241,12 @@ class PolynomX{
 //console.log(a.mul(a));
 //let a = new PolynomX(0,0,2);
 
-let x = Array.from({length:9}, Math.random).sort(), epsilon = 1e-6;
+//let x = Array.from({length:9}, Math.random).sort(), epsilon = 1e-6;
 
-let p = x.reduce((p, x)=>(p.mulnew(-x,1)), new PolynomX(1));
+//let p = x.reduce((p, x)=>(p.mulnew(-x,1)), new PolynomX(1));
 
-let r = p.realRoots(epsilon);
+//let r = p.realRoots(epsilon);
 
-console.log(x);
-console.log(r.map((r,i)=>(r-x[i])));
+//console.log(x);
+//console.log(r.map((r,i)=>(r-x[i])));
 module.exports = PolynomX;

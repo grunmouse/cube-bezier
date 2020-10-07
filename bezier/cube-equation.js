@@ -7,7 +7,7 @@ const {
 	sinh,
 	sqrt,
 	abs,
-	sgn,
+	sign,
 	PI
 } = Math;
 
@@ -39,7 +39,7 @@ function cube_viet(a, b, c){
 			if(Q>0){
 				const phi = acosh(varphi)/3;
 				
-				let x = -2 * sgn(R) * Q05 * cosh(phi) - a/3;
+				let x = -2 * sign(R) * Q05 * cosh(phi) - a/3;
 				return [x];
 			}
 			else{

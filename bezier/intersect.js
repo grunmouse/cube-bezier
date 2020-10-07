@@ -11,7 +11,6 @@
  * rakov, 2020
  */
  
-const Vector2D = require('./Vector2D.js');
 const Polynomial = require('./Polynomial.js');
 const {Vector2} = require('@grunmouse/math-vector');
 
@@ -43,9 +42,9 @@ Intersection.prototype.init = function(status) {
 *   appendPoint
 *
 *****/
-Intersection.prototype.appendPoint = function(point) {
+/* Intersection.prototype.appendPoint = function(point) {
     this.points.push(point);
-};
+}; */
 
 
 /*****
@@ -53,9 +52,9 @@ Intersection.prototype.appendPoint = function(point) {
 *   appendPoints
 *
 *****/
-Intersection.prototype.appendPoints = function(points) {
+/* Intersection.prototype.appendPoints = function(points) {
     this.points = this.points.concat(points);
-};
+}; */
 
 
 /*****
@@ -70,43 +69,43 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
     var result = new Intersection("No Intersection");
 
     // Calculate the coefficients of cubic polynomial
-    a = a1.multiply(-1);
-    b = a2.multiply(3);
-    c = a3.multiply(-3);
+    a = a1.mul(-1);
+    b = a2.mul(3);
+    c = a3.mul(-3);
     d = a.add(b.add(c.add(a4)));
-    c13 = new Vector2D(d.x, d.y);
+    c13 = new Vector2(d.x, d.y);
 
-    a = a1.multiply(3);
-    b = a2.multiply(-6);
-    c = a3.multiply(3);
+    a = a1.mul(3);
+    b = a2.mul(-6);
+    c = a3.mul(3);
     d = a.add(b.add(c));
-    c12 = new Vector2D(d.x, d.y);
+    c12 = new Vector2(d.x, d.y);
 
-    a = a1.multiply(-3);
-    b = a2.multiply(3);
+    a = a1.mul(-3);
+    b = a2.mul(3);
     c = a.add(b);
-    c11 = new Vector2D(c.x, c.y);
+    c11 = new Vector2(c.x, c.y);
 
-    c10 = new Vector2D(a1.x, a1.y);
+    c10 = new Vector2(a1.x, a1.y);
 
-    a = b1.multiply(-1);
-    b = b2.multiply(3);
-    c = b3.multiply(-3);
+    a = b1.mul(-1);
+    b = b2.mul(3);
+    c = b3.mul(-3);
     d = a.add(b.add(c.add(b4)));
-    c23 = new Vector2D(d.x, d.y);
+    c23 = new Vector2(d.x, d.y);
 
-    a = b1.multiply(3);
-    b = b2.multiply(-6);
-    c = b3.multiply(3);
+    a = b1.mul(3);
+    b = b2.mul(-6);
+    c = b3.mul(3);
     d = a.add(b.add(c));
-    c22 = new Vector2D(d.x, d.y);
+    c22 = new Vector2(d.x, d.y);
 
-    a = b1.multiply(-3);
-    b = b2.multiply(3);
+    a = b1.mul(-3);
+    b = b2.mul(3);
     c = a.add(b);
-    c21 = new Vector2D(c.x, c.y);
+    c21 = new Vector2(c.x, c.y);
 
-    c20 = new Vector2D(b1.x, b1.y);
+    c20 = new Vector2(b1.x, b1.y);
 
     var c10x2 = c10.x*c10.x;
     var c10x3 = c10.x*c10.x*c10.x;
@@ -351,7 +350,7 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
                     for ( var k = 0; k < yRoots.length; k++ ) {
                         if ( Math.abs( xRoot - yRoots[k] ) < TOLERANCE ) {
                             result.points.push(
-                                c23.multiply(s*s*s).add(c22.multiply(s*s).add(c21.multiply(s).add(c20)))
+                                c23.mul(s*s*s).add(c22.mul(s*s).add(c21.mul(s).add(c20)))
                             );
                             break checkRoots;
                         }

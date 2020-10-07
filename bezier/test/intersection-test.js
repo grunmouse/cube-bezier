@@ -2,11 +2,7 @@ const assert = require('assert');
 
 
 const Intersection = require('../intersect.js');
-const Vector2D = require('../Vector2D.js');
 const {Vector2} = require('@grunmouse/math-vector');
-
-Vector2.prototype.multiply = Vector2.prototype.mul;
-Vector2.prototype.subtract = Vector2.prototype.sub;
 
 describe('Intersection', ()=>{
 	it('Exist', ()=>{

@@ -83,7 +83,8 @@ class PolynomX{
 			let y = this._initRoots(epsilon);
 			let r, q = this, count = this.deg - 3;
 			let roots = [];
-			for(let i = 0; i<min(count, y.length); ++i){
+			let max = min(count, y.length)
+			for(let i = 0; i < max; ++i){
 				let x = this._Newton(y[i], epsilon);
 				
 				({r, q} = q.div(new PolynomX(-x,1)));
@@ -91,7 +92,8 @@ class PolynomX{
 				[r, q] = [r,q].map(a=>a.ignoreEpsilon(epsilon));
 				
 				if(!r.isZero()){
-					throw new Error('Нужно улучшить корень');
+					max = y.length;
+					//throw new Error('Нужно улучшить корень');
 				}
 				
 				roots.push(x);

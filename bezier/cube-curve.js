@@ -145,6 +145,9 @@ function splitInflection(B){
 	}
 }
 
+
+
+
 module.exports = {
 	curvature,
 	inflection,

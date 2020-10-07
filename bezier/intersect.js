@@ -12,6 +12,7 @@
  */
  
 const Polynomial = require('./Polynomial.js');
+const PolynomX = require('./polynom-x.js');
 const {Vector2} = require('@grunmouse/math-vector');
 
 /*****
@@ -303,6 +304,12 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
     );
     var roots = poly.getRootsInInterval(0,1);
 
+	let c2x = new PolynomX(c20.x, c21.x, c22.x, c23.x);
+	let c2y = new PolynomX(c20.y, c21.y, c22.y, c23.y);
+
+	/*
+	Корни - это точки на кривой b
+	 */
     for ( var i = 0; i < roots.length; i++ ) {
         var s = roots[i];
         var xRoots = new Polynomial(
@@ -329,7 +336,7 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
                     for ( var k = 0; k < yRoots.length; k++ ) {
                         if ( Math.abs( xRoot - yRoots[k] ) < TOLERANCE ) {
                             result.points.push(
-                                c23.mul(s*s*s).add(c22.mul(s*s).add(c21.mul(s).add(c20)))
+                                [s, c23.mul(s*s*s).add(c22.mul(s*s).add(c21.mul(s).add(c20)))]
                             );
                             break checkRoots;
                         }

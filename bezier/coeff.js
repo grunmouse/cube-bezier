@@ -1,7 +1,7 @@
 const factorial = [...(function*(){
 	let i=0, f = 1;
 	yield f;
-	for(i=1;i<7;++i){
+	for(i=1;i<10;++i){
 		f*=i;
 		yield f;
 	}

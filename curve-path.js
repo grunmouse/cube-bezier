@@ -28,6 +28,16 @@ class CurvePath{
 		}
 		return code;
 	}
+	
+	toPS(){
+		let {start, curves, close} = this;
+		let code = start.join(' ') + ' moveto' 
+			+ curves.map((curve)=>(recursiveJoin(curve.relativeCDR(), [' ', ' '])+ ' rcurveto'));
+		
+		if(close){
+			code = `newpath ${code} closepath`;
+		}
+	}
 
 }
 

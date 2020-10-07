@@ -31,7 +31,7 @@ function cube_viet(a, b, c){
 			-2*Q05*cos(phi+step) - a/3
 		));
 		
-		return x;
+		return x.sort();
 	}
 	else if(S<0){
 		if(Q!==0){
@@ -49,7 +49,7 @@ function cube_viet(a, b, c){
 			}
 		}
 		else{
-			let x = -(c-a**3/27)**(1/3) - a/3;
+			let x = -((c-a**3/27)**(1/3)) - a/3;
 			return [x];
 		}
 	}
@@ -59,7 +59,7 @@ function cube_viet(a, b, c){
 			-2*R_3-a/3,
 			R_3-a/3
 		]
-		return x;
+		return x.sort();
 	}
 	return [];
 }
@@ -68,7 +68,7 @@ function cube_viet(a, b, c){
  * Находит рациональные корни уравнения ax^2+bx+c =0;
  */
 function square(a, b, c){
-	if(a!=0){
+	if(a){
 		const D = b**2 - 4 *a*c;
 		if(D>0){
 			let step = sqrt(D);
@@ -96,7 +96,7 @@ function square(a, b, c){
  * Находит конечные корни уравнения ax+b=0
  */
 function linear(a, b){
-	if(a!==0){
+	if(a){
 		let x = -b/a;
 		return [x];
 	}
@@ -107,7 +107,7 @@ function linear(a, b){
  * Находит рациональные корни уравнения ax^3+bx^2+cx+t=0;
  */
 function cube(a, b, c, d){
-	if(a!=0){
+	if(a){
 		return cube_viet(b/a, c/a, d/a);
 	}
 	else{

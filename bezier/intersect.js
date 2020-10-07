@@ -20,9 +20,8 @@ const {Vector2} = require('@grunmouse/math-vector');
 *
 *****/
 function Intersection(status) {
-    if ( arguments.length > 0 ) {
-        this.init(status);
-    }
+	this.setStatus(!!status)
+    this.points = new Array();
 }
 
 
@@ -31,30 +30,10 @@ function Intersection(status) {
 *   init
 *
 *****/
-Intersection.prototype.init = function(status) {
-    this.status = status;
-    this.points = new Array();
+Intersection.prototype.setStatus = function(status) {
+	this.isIntersection = !!status;
+	this.status = !!status ? "Intersection" : "No Intersection";
 };
-
-
-/*****
-*
-*   appendPoint
-*
-*****/
-/* Intersection.prototype.appendPoint = function(point) {
-    this.points.push(point);
-}; */
-
-
-/*****
-*
-*   appendPoints
-*
-*****/
-/* Intersection.prototype.appendPoints = function(points) {
-    this.points = this.points.concat(points);
-}; */
 
 
 /*****
@@ -66,46 +45,46 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
     var a, b, c, d;         // temporary variables
     var c13, c12, c11, c10; // coefficients of cubic
     var c23, c22, c21, c20; // coefficients of cubic
-    var result = new Intersection("No Intersection");
+    var result = new Intersection();
 
     // Calculate the coefficients of cubic polynomial
     a = a1.mul(-1);
     b = a2.mul(3);
     c = a3.mul(-3);
     d = a.add(b.add(c.add(a4)));
-    c13 = new Vector2(d.x, d.y);
+    c13 = d;
 
     a = a1.mul(3);
     b = a2.mul(-6);
     c = a3.mul(3);
     d = a.add(b.add(c));
-    c12 = new Vector2(d.x, d.y);
+    c12 = d;
 
     a = a1.mul(-3);
     b = a2.mul(3);
     c = a.add(b);
-    c11 = new Vector2(c.x, c.y);
+    c11 = c;
 
-    c10 = new Vector2(a1.x, a1.y);
+    c10 = a1;
 
     a = b1.mul(-1);
     b = b2.mul(3);
     c = b3.mul(-3);
     d = a.add(b.add(c.add(b4)));
-    c23 = new Vector2(d.x, d.y);
+    c23 = d;
 
     a = b1.mul(3);
     b = b2.mul(-6);
     c = b3.mul(3);
     d = a.add(b.add(c));
-    c22 = new Vector2(d.x, d.y);
+    c22 = d;
 
     a = b1.mul(-3);
     b = b2.mul(3);
     c = a.add(b);
-    c21 = new Vector2(c.x, c.y);
+    c21 = c;
 
-    c20 = new Vector2(b1.x, b1.y);
+    c20 = b1;
 
     var c10x2 = c10.x*c10.x;
     var c10x3 = c10.x*c10.x*c10.x;
@@ -360,7 +339,7 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
         }
     }
 
-    if ( result.points.length > 0 ) result.status = "Intersection";
+    if ( result.points.length > 0 ) result.setStatus(true);
 
     return result;
 };

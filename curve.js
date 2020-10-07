@@ -14,6 +14,10 @@ class Curve extends Array{
 		return bezier.point(this, t);
 	}
 	
+	split(t){
+		return bezier.split(this, t).map(a=>(new Curve(...a)));
+	}
+	
 }
 
 module.exports = Curve;

@@ -1,7 +1,8 @@
 const {
 	abs,
 	sign,
-	min
+	min,
+	max
 } = Math;
 
 const cube = require('./cube-equation.js');
@@ -228,6 +229,18 @@ class PolynomX{
 	
 	mulnew(...c){
 		return this.mul(new PolynomX(...c));
+	}
+	
+	add(summand){
+		const a = this.a, b = summand.a, res = [];
+		for(let i=0; i<max(a.length, b.length); ++i){
+			res[i] = (a[i]||0) + (b[i]||0);
+		}
+		return new PolynomX(...res);
+	}
+
+	addnew(...c){
+		return this.add(new PolynomX(...c));
 	}
 }
 

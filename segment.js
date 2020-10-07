@@ -1,5 +1,6 @@
 const Curve = require('./curve.js');
 const Node = require('./node-of-curve.js');
+const Intersection = require('./bezier/intersect.js');
 
 /**
  * Представляет кубическую кривую Безье, заданную двумя узлами с оттяжками,
@@ -24,6 +25,72 @@ class Segment{
 		return new Segment(this.nodeA.clone(), this.nodeB.clone());
 	}
 	
+	selfReplace(struct){
+		this.nodeA.sibling.connect(struct.nodeA);
+		this.nodeB.sibling.connect(struct.nodeB);
+		this.nodeA.sibling = undefined;
+		this.nodeB.sibling = undefined;
+		this.excluded = true;
+		return struct;
+	}
+	
+	/**
+	 * Разбивает сегмент на два сцепленных сегмента
+	 */
+	split(t){
+		let curves = this.points.split(t);
+		
+		let segs = Segment.reconstruction(curves);
+		
+		return this.selfReplace(segs);
+	}
+	
+	intersect(seg){
+		return Intersection.intersectBezier3Bezier3(...seg.points, ...this.points);
+	}
+	
+	*itrIntersections(segments){
+		for(let seg of segments){
+			let res = this.intersect(seg);
+			if(res.isIntersection){
+				yield [seg, res];
+			}
+		}
+	}
+	
+	
+	isLine(){
+		//Сегмент линеен, если все три части ломаной коллинеарны
+		return nodeA.V.cross(nodeB.V) === 0 && nodeA.A.sub(nodeB.A).cross(nodeA.V) === 0;
+	}
+	
+	toLong(s){
+		if(this.isLine()){
+			let free, stat;
+			if(!nodeB.sibling){
+				free = nodeB;
+				stat = nodeA;
+			}
+			else if(!nodeA.sibling){
+				free = nodeA;
+				stat = nodeB;
+			}
+			else{
+				throw new Error('Segment is full connected');
+			}
+			
+			let calc = stat.mirror(s);
+			
+			free.A = calc.A;
+			free.B = calc.B;
+		}
+		else{
+			throw new Error('Segment is not linear';
+		}
+	}
+	
+
+	
 	/**
 	 * Метод с побочным эффектом!
 	 * Меняет порядок обхода сегмента, не меняя его формы
@@ -46,6 +113,11 @@ class Segment{
 	
 	/**
 	 * Возвращает аргументы, описывающие условия обхода сегмента, начиная с переданного узла
+	 * @return [Node, Node, Boolean, Segment] 
+	 * - узел начала обхода, 
+	 * - узел конца обхода,
+	 * - признак обратного направления обхода (начало - это nodeB)
+	 * - ссылка на сегмент
 	 */ 
 	traceState(node){
 		const {nodeA, nodeB} = this;

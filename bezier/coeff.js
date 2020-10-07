@@ -11,7 +11,7 @@ const factorial = [...(function*(){
  * Мультиноминальный коэффициент по массиву нижних индексов (верхний рассчитывается автоматически)
  * \binom{\sum{arr}}{arr}
  */
-function multinom(arr){
+function multinom(...arr){
 	let sum = arr.reduce((akk, v)=>(akk+v),0);
 	let res = factorial[sum];
 	for(let v of arr){

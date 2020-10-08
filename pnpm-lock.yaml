@@ -1,4 +1,5 @@
 dependencies:
+  '@grunmouse/math-matrix': 'link:../math-matrix'
   '@grunmouse/math-vector': 'link:../math-vector'
   '@grunmouse/multioperator-ariphmetic': 'link:../multioperator-ariphmetic'
   '@grunmouse/strings': 'link:../strings'
@@ -42,6 +43,7 @@ packages:
       integrity: sha1-rHO/pfJTQ0aOLQ8zRsYRe8A9PJk=
 specifiers:
   '@grunmouse/assert': 'link:..\assert'
+  '@grunmouse/math-matrix': 'link:..\math-matrix'
   '@grunmouse/math-vector': 'link:..\math-vector'
   '@grunmouse/multioperator-ariphmetic': 'link:..\multioperator-ariphmetic'
   '@grunmouse/strings': 'link:..\strings'

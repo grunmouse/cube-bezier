@@ -81,6 +81,9 @@ class PolynomX{
 			return cube(a[3],a[2],a[1],a[0]);
 		}
 		else{
+			if(!epsilon){
+				throw new Error('Numberic calculation required a epsilon!');
+			}
 			let y = this._initRoots(epsilon);
 			let r, q = this, count = this.deg - 3;
 			let roots = [];
@@ -110,8 +113,8 @@ class PolynomX{
 	/**
 	 * Определяет количество рациональных корней и выбирает для каждого начальное приближение
 	 */
-	_initRoots(epsilon){
-		let y = this.diff.realRoots(epsilon);
+	_initRoots(epsilon, lmin, lmax){
+		let y = this.diff.realRoots(epsilon, lmin, lmax);
 		let f = y.map(y=>this.eval(y));
 		
 		const r = new Set();
@@ -128,11 +131,11 @@ class PolynomX{
 		}
 		
 		const step = 10;
-		let i =0, x = y[i]-step, l = this.diff.eval(x);
+		let i =0, x = lmin || y[i]-step, l = this.diff.eval(x);
 		if(sign(l) !== sign(f[i])){
 			r.add(x);
 		}
-		i = y.length-1, x = y[i]+step, l = this.diff.eval(x);
+		i = y.length-1, x = lmax || y[i]+step, l = this.diff.eval(x);
 		if(sign(l) !== sign(f[i])){
 			r.add(x);
 		}
@@ -237,6 +240,10 @@ class PolynomX{
 			res[i] = (a[i]||0) + (b[i]||0);
 		}
 		return new PolynomX(...res);
+	}
+	
+	neg(){
+		return new PolynomX(...this.a.map(a=>(-1)));
 	}
 
 	addnew(...c){

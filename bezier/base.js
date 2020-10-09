@@ -4,6 +4,34 @@
 
 const {symbols:{SUB, ADD, MUL, DIV}} = require('@grunmouse/multioperator-ariphmetic');
 
+const {
+	multinom
+} = require('./math.js');
+
+/**
+ * Перечисляет пары элементов массива от первого до последнего
+ */
+function pairs(arr){
+	let len = arr.length-1;
+	let res = [];
+	for(let i=0;i<len; ++i){
+		res.push([arr[i],arr[i+1]]);
+	}
+	return res;
+}
+/**
+ * Перечисляет пары элементов массива, добавляя к ним пару последнего с первым
+ */
+function opairs(arr){
+	let len = arr.length-1;
+	let res = [];
+	for(let i=0;i<len; ++i){
+		res.push([arr[i],arr[i+1]]);
+	}
+	res.push([arr[len],arr[0]]);
+	return res;
+}
+
 /**
  * Сводит массив точек к массиву промежуточных точек с параметром t
  */
@@ -100,7 +128,7 @@ function splits(arr, T){
 }
 
 /**
- * Восстанавливает разделённую кривую Безье
+ * Восстанавливает разделённую кривую Безье и пропорцию её разбиение
  */
 function join(B, C){
 	if(!B[3].eq(C[0])){
@@ -115,17 +143,22 @@ function join(B, C){
 	let M = B[1].sub(B[0].mul(1-t)).div(t);
 	let N = C[2].sub(C[3].mul(t)).div(1-t);
 	
-	return [B[0], M, N, C[3]];
+	return [[B[0], M, N, C[3]], t];
 }
 /**
- * Восстанавливает кривую, разделённую на несколько частей
+ * Восстанавливает кривую, разделённую на несколько частей и массив пропорций разбиения
  */
 function joins(arrs){
 	return arrs.reduce((akk, B)=>{
 		if(!akk){
-			return B;
+			return [B, [0]];
 		}
-		return join(akk, B);
+		let [A, T] = akk, t;
+		
+		[A, t] = join(A, B);
+		T = T.map((s)=>(s*t));
+		T.push(t);
+		return [A, T];
 	});
 }
 
@@ -152,7 +185,41 @@ function proj(curve, axis){
 	return curve.map((v)=>(v[axis]));
 }
 
+/**
+ * Рассчитывает коэффициенты полинома одномерной кривой
+ * @param K : Array<Number> - точки одномерной кривой в порядке следования
+ * @return Array<Number> - коэффициенты полинома под номерами степеней переменной
+ */
+function coeff(K){
+	let n = K.length - 1;
+	let c = K.map((_, j)=>{
+		let res = 0;
+		for(let k=0; k<=j; ++k){
+			let part = multinom(j-k, k, n-j) * K[j-k];
+			if(k & 1 === 1){
+				//(-1)**k
+				part =-part;
+			}
+			res += part;
+		}
+		return res;
+	});
+	return c;
+}
+
+/**
+ * Возвращает по полиному для каждого измерения кривой Безье
+ * @param curve : Array<Vector>
+ */
+function coeffsXY(curve){
+	return Array.from(curve[0], (_, i)=>(
+		coeff(proj(curve, i))
+	));
+}
+
 module.exports = {
+	pairs,
+	opairs,
 	reduce,
 	point,
 	delta,
@@ -163,5 +230,7 @@ module.exports = {
 	splitCond,
 	join,
 	joins,
+	coeff,
+	coeffsXY,
 	proj
 };

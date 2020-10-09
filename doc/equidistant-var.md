@@ -62,6 +62,8 @@ $$\left|\vec s_{i-1}+\vec s_{i}\right|^2 =
 2s^2\left(1 + \cos\theta \right);
 $$
  
+Выразим вектор r для i точки
+
 $$\vec{r}_i = \left|\vec{r}_i\right| \left(\vec s_{i-1}+\vec s_{i}\right)^0
 = \left|\vec{r}_i\right| \frac{\vec s_{i-1}+\vec s_{i}}{\left|\vec s_{i-1}+\vec s_{i}\right|}
 = \left(\vec s_{i-1}+\vec s_{i}\right) \frac{\left|\vec{r}_i\right|}{\left|\vec s_{i-1}+\vec s_{i}\right|}

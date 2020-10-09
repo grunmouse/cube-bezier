@@ -66,15 +66,16 @@ describe('bezier', ()=>{
 	
 	jsc.property('join', RealBEZIER, middleNumber, (A, t)=>{
 		let [B, C] = bezier.split(A, t);
-		let D = bezier.join(B, C);
+		let [D, s] = bezier.join(B, C);
 		assert.approxTupleEqual(D, A, 1e-9);
+		assert.approxEqual(s, t, 1e-6);
 		return true;
 	});
 	jsc.property('join 2', RealBEZIER, middleNumber, (A, t)=>{
 		let [B, C] = bezier.split(A, t);
 		let [D, E] = bezier.split(B,0.5);
 		let [X, Y] = bezier.split(A, 0.5*t);
-		let M = bezier.join(E, C);
+		let [M, s] = bezier.join(E, C);
 		assert.approxTupleEqual(M, Y, 1e-9);
 		return true;
 	});

@@ -1,6 +1,8 @@
 const  {
 	delta,
 	odelta,
+	opairs,
+	pairs,
 	proj
 } = require('./base.js');
 
@@ -130,22 +132,10 @@ function isIntersectRectagle(A, B, C, D){
 	});
 }
 
-/**
- * Возвращает положительное значение, если поворот от a к b - против часовой стрелки, и 
- * отрицательное, в противоположном случае, ноль, если их разность кратна 2pi
- */
-function angleSub(a, b){
-	let d = b - a; //Разность узлов, как она есть
-	//Надо получить разность от -PI до PI
-	while(d>Math.PI){
-		d -= 2*Math.PI;
-	}
-	while(d<-Math.PI){
-		d += 2*Math.PI;
-	}
-	return d;
-}
 
+/**
+ * Проверяет, находится ли точка R внутри треугольника ABC
+ */
 function isInTriangle(R, A, B, C){
 	const ABC = [A, B, C];
 	const abc = odelta(ABC);
@@ -153,6 +143,16 @@ function isInTriangle(R, A, B, C){
 		abc[i].cross(R.sub(A))
 	));
 	
+	return s.every((a)=>(a>0)) || s.every((a)=>(a<0));
+}
+
+/**
+ * Проверяет, находится ли точка внутри выпуклой оболочки
+ */
+function isInConvex(R, S){
+	let s = opairs(S).map(([A,B])=>(
+		B.sub(A).cross(R.sub(A)
+	)));
 	return s.every((a)=>(a>0)) || s.every((a)=>(a<0));
 }
 
@@ -187,27 +187,9 @@ function convex(A, B, C, D){
 	}
 }
 
-function pairs(arr){
-	let len = arr.length-1;
-	let res = [];
-	for(let i=0;i<len; ++i){
-		res.push([arr[i],arr[i+1]]);
-	}
-	return res;
-}
-function *opairs(arr){
-	let len = arr.length-1;
-	let res = [];
-	for(let i=0;i<len; ++i){
-		res.push([arr[i],arr[i+1]]);
-	}
-	res.push([arr[len],arr[0]]);
-	return res;
-}
-
  
 /**
- * Проверяет выпуклые оболочки на пересечение
+ * Анализирует пересечение выпуклых оболочек
  */
 function intersectConvex(M, N){
 	let cross = [];
@@ -249,3 +231,34 @@ function intersectConvex(M, N){
 		Ns, Ms
 	};
 }
+
+/**
+ * Проверяет выпуклые оболочки на пересечение
+ */
+function isIntersectConvex(M, N){
+	let cross = [];
+	const m = opairs(M), n = opairs(N);
+	let sn = [], sm = [];
+	for(let [A, B] of m){
+		for(let [C, D] of n){
+			let R = intersectLinePart(A,B,C,D);
+			if(R){
+				return true;
+			}
+		}
+	}
+	
+	//Возможно, одна оболочка полностьюу находится внутри другой. Проверим
+	let s = isInConvex(M[0], N) || isInConvex(N[0], M);
+	
+	return s;
+}
+
+module.exports = {
+	boldstroke,
+	convex,
+	isInTriangle,
+	isInConvex,
+	intersectConvex,
+	isIntersectConvex
+};

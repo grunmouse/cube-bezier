@@ -45,19 +45,7 @@ class Segment{
 		return this.selfReplace(segs);
 	}
 	
-	intersect(seg){
-		return Intersection.intersectBezier3Bezier3(...seg.points, ...this.points);
-	}
-	
-	*itrIntersections(segments){
-		for(let seg of segments){
-			let res = this.intersect(seg);
-			if(res.isIntersection){
-				yield [seg, res];
-			}
-		}
-	}
-	
+
 	
 	isLine(){
 		//Сегмент линеен, если все три части ломаной коллинеарны

@@ -15,6 +15,8 @@ const PolynomX = require('./polynom-x.js');
 const {Vector2} = require('@grunmouse/math-vector');
 const coeff = require('./coeff.js');
 const {resultant3x3} = require('./resultant.js');
+const {abs} = Math;
+
 
 /*****
 *
@@ -74,6 +76,10 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
 			p2x.eval(s),
 			p2y.eval(s)
 		);
+		
+		/*
+		 * Находим точку кривой a из уравнений для X и для Y
+		 */
         var xRoots = p1x.addnew(-p2x.eval(s)).realRoots(1e-8);
         var yRoots = p1y.addnew(-p2y.eval(s)).realRoots(1e-8);
 
@@ -89,7 +95,7 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
                         if ( Math.abs( xRoot - yRoots[k] ) < TOLERANCE ) {
 							let t = (xRoot + yRoots[k])/2;
                             result.points.push(
-                                [s, p, t]
+                                [s, p, xRoot]
                             );
                             break checkRoots;
                         }
@@ -103,5 +109,34 @@ Intersection.intersectBezier3Bezier3 = function(a1, a2, a3, a4, b1, b2, b3, b4) 
 
     return result;
 };
+
+Intersection.intersectBezier3Self = function(a1, a2, a3, a4){
+	const A = [a1, a2, a3, a4];
+	const [A_4, A_3, A_2, A_1] = coeff(A.map(a=>(a.x)));
+	const [B_4, B_3, B_2, B_1] = coeff(A.map(a=>(a.y)));
+	
+	const N_0 = (3 * (A_1*B_3 - A_3*B_1)**2 - 4 * (A_1*B_2 - A_2*B_1) * (A_2*B_3 - A_3*B_2));
+	
+	const N_2 = (A_1*B_2 - A_2*B_1)**2;
+	
+	if(N_0>=0 || N_2 === 0){
+		return new Intersection();
+	}
+	
+	const Q = -N_0/N_2;
+	
+	const a = sqr(Q); //Нам нужна только положительная разность точек, если она будет отрицательная - точки просто поменяются местами
+	
+	//Нахождение t из уравнений для X и для Y, для проверки
+	const rootByX = new PolynomX((A_1*a+A_2)*a+A_3, 3*A_1*a + 2 *A_2, 3*A_1).realRoots().filter(x=>(x>=0 && x<=1)); 
+	const rootByY = new PolynomX((B_1*a+B_2)*a+B_3, 3*B_1*a + 2 *B_2, 3*B_1).realRoots().filter(x=>(x>=0 && x<=1)); 
+	let TOLERANCE = 1e-4;
+	for(let x of rootX){
+		for(let y of rootY){
+			if(abs(x-y)<TOLERANCE){
+			}
+		}
+	}
+}
 
 module.exports = Intersection;

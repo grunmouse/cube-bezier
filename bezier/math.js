@@ -53,7 +53,6 @@ function angleSub(a, b){
 }
 
 
-
 module.exports = {
 	factorial,
 	binom,

@@ -41,11 +41,24 @@ $$
 $$
 \begin{gathered}
 c_0 = K_0;\\
-c_1 = 3(-K_0 +K_1);\\
-c_2 = 3(\binom{2}{0} K_0 - \binom{2}{1}K_1 + \binom{2}{2}K_2);\\
+c_1 = 3\left(-K_0 +K_1\right);\\
+c_2 = 3\left(\binom{2}{0} K_0 - \binom{2}{1}K_1 + \binom{2}{2}K_2\right);\\
 c_3 = -\binom{3}{0}K_0 +\binom{3}{1}K_1 - \binom{3}{2}K_2 + \binom{3}{3}K_3.
 \end{gathered}
 $$
+
+### Обратная операция
+
+$$K_0 = c_0;$$
+
+$$K_1 = \frac{c_1}{3}+K_0;$$
+
+$$\binom{2}{2}K_2 = \frac{c_2}{3} - \binom{2}{0} K_0 + \binom{2}{1}K_1;$$
+$$K_2 = \frac{c_2}{3} - \binom{2}{0} K_0 + \binom{2}{1}K_1;$$
+
+$$\binom{3}{3}K_3 = c_3 + \binom{3}{0}K_0 -\binom{3}{1}K_1 + \binom{3}{2}K_2;$$
+$$K_3 = c_3 + \binom{3}{0}K_0 -\binom{3}{1}K_1 + \binom{3}{2}K_2.$$
+
 
 ## Квадратичная кривая
 $$P_{2,K} = 0;\; K \in \mathbb{R}^3.$$
@@ -71,6 +84,13 @@ c_2 = \binom{2}{0} K_0 - \binom{2}{1}K_1 + \binom{2}{2}K_2.
 \end{gathered}
 $$
 
+### Обратная операция
+
+$$K_0 = c_0;$$
+
+$$K_1 = \frac{c_1}{2} + K_0;$$
+
+$$K_2 = c_2 - \binom{2}{0} K_0 + \binom{2}{1}K_1.$$
 
 
 ## Линейная кривая
@@ -84,6 +104,12 @@ $$\begin{gathered}
 c_1 = (-K_0 + K_1);\\
 c_0 = K_0.
 \end{gathered}$$
+
+### Обратная операция
+
+$$K_0 = c_0;$$
+
+$$c_1 = c_1 + K_0.$$
 
 ## В общем виде
 
@@ -120,3 +146,33 @@ $$P = \sum_{j=0}^{n} \sum_{k=0}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-(j-k)-k} 
 $$P = \sum_{j=0}^{n} t^j \sum_{k=0}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-j}K_{j-k} \right);$$
 
 $$c_j = \sum_{k=0}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-j}K_{j-k} \right).$$
+
+### Обратная операция
+
+$$c_j = \sum_{k=0}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-j}K_{j-k} \right);$$
+$$c_j 
+= \sum_{k=1}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-j}K_{j-k} \right)
++ \binom{n}{j,\,0,\,n-j}K_{j}
+;$$
+$$\binom{n}{j,\,0,\,n-j}K_{j}
+= c_j 
+- \sum_{k=1}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-j}K_{j-k} \right) 
+;$$
+$$K_{j}
+= \binom{n}{j,\,0,\,n-j}^{-1}c_j 
+- \binom{n}{j,\,0,\,n-j}^{-1}\sum_{k=1}^{j} \left((-1)^k \binom{n}{j-k,\,k,\,n-j}K_{j-k} \right) 
+.$$
+
+Разделим мульнитомиальные коэффициенты
+
+$$\binom{n}{j,\,0,\,n-j}^{-1} = \binom{n}{j};$$
+$$\binom{n}{j,\,0,\,n-j}^{-1}\binom{n}{j-k,\,k,\,n-j}
+=\frac{j!(n-j)!}{n!}\frac{n!}{(j-k)!k!(n-j)!}
+=\frac{j!}{(j-k)!k!}
+= \binom{j}{k}.
+$$
+
+$$K_{j}
+= \binom{n}{j}^{-1}c_j 
+- \sum_{k=1}^{j} \left((-1)^k \binom{j}{k}K_{j-k} \right) 
+.$$

@@ -1,6 +1,8 @@
 const Curve = require('./curve.js');
 const Node = require('./node-of-curve.js');
 const Intersection = require('./bezier/intersect.js');
+const {POINT_TOLERANCE} = require('./constants.js');
+const abs = Math.abs;
 
 /**
  * Представляет кубическую кривую Безье, заданную двумя узлами с оттяжками,
@@ -9,8 +11,22 @@ const Intersection = require('./bezier/intersect.js');
 
 class Segment{
 	constructor(nodeA, nodeB){
-		this.nodeA = nodeA;
-		this.nodeB = nodeB;
+		Object.defineProperties(this,{
+			nodeA:{
+				configurable:true,
+				enumerable:true,
+				writable:false,
+				value:nodeA
+			},
+			nodeB:{
+				configurable:true,
+				enumerable:true,
+				writable:false,
+				value:nodeB
+			}
+		});
+		//this.nodeA = nodeA;
+		//this.nodeB = nodeB;
 		
 		nodeA.segment = this;
 		nodeB.segment = this;
@@ -25,11 +41,19 @@ class Segment{
 		return new Segment(this.nodeA.clone(), this.nodeB.clone());
 	}
 	
-	selfReplace(struct){
-		this.nodeA.sibling.connect(struct.nodeA);
-		this.nodeB.sibling.connect(struct.nodeB);
-		this.nodeA.sibling = undefined;
-		this.nodeB.sibling = undefined;
+	eq(b){
+		return this === b || this.points.eq(b.points);
+	}
+	
+	approxEqual(t, s){
+		return t === s || abs(t-s)<=this.points.epsilon();
+	}
+	/**
+	 *
+	 */
+	self_replace(struct){
+		this.nodeA.self_replace(struct.nodeA);
+		this.nodeB.self_replace(struct.nodeB);
 		this.excluded = true;
 		return struct;
 	}
@@ -42,7 +66,7 @@ class Segment{
 		
 		let segs = Segment.reconstruction(curves);
 		
-		return this.selfReplace(segs);
+		this.self_replace(segs);
 	}
 	
 
@@ -73,7 +97,7 @@ class Segment{
 			free.B = calc.B;
 		}
 		else{
-			throw new Error('Segment is not linear';
+			throw new Error('Segment is not linear');
 		}
 	}
 	
@@ -85,8 +109,22 @@ class Segment{
 	 */
 	reverse(){
 		const {nodeA, nodeB} = this;
-		this.nodeA = nodeB;
-		this.nodeB = nodeA;
+		Object.defineProperties(this,{
+			nodeA:{
+				configurable:true,
+				enumerable:true,
+				writable:false,
+				value:nodeB
+			},
+			nodeB:{
+				configurable:true,
+				enumerable:true,
+				writable:false,
+				value:nodeA
+			}
+		});
+		//this.nodeA = nodeB;
+		//this.nodeB = nodeA;
 		
 		return this;
 	}

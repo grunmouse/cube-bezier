@@ -145,6 +145,44 @@ class PolynomX{
 	}
 	
 	
+	
+	/**
+	 * Рассчитывает экстремальные точки
+	 */
+	extremal(epsilon){
+		let T = this.diff.realRoots(epsilon);
+		let S = this.diff.diff;
+		const maximum = new Set();
+		const minimum = new Set();
+		
+		for(let t of T){
+			let s = S.eval(t);
+			if(s>Number.EPSILON){
+				maximum.add(t);
+			}
+			else if(s<-Number.EPSILON){
+				minimum.add(t);
+			}
+		}
+		return {
+			maximum,
+			minimum
+		}		
+	}
+	
+	/**
+	 * Находит глобальные минимум и максимум на отрезке
+	 */
+	minmax(epsilon, lmin, lmax){
+		let T = this.diff.realRoots(epsilon).filter(t=>(t>=lmin && t<=lmax));
+		let val = [...T, lmin, lmax].map(t=>(this.eval(t)));
+		return {
+			min:Math.min(...val),
+			max:Math.max(...val)
+		};
+	}
+	
+	
 	/**
 	 * Степень полинома. 
 	 */
@@ -228,6 +266,18 @@ class PolynomX{
 			q[k] = v;
 		}
 		return new PolynomX(...Array.from(q,a=>(a||0)));
+	}
+	
+	/**
+	 * Возводит полином в целую степень
+	 */
+	pow(e){
+		//Наивный алгоритм. Надо будет заменить быстрым возведением или раскрытием полинома
+		let m = this;
+		for(let i=1; i<e; ++i){
+			m = m.mul(this);
+		}
+		return m;
 	}
 	
 	mulnew(...c){

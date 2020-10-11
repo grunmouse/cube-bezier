@@ -161,14 +161,34 @@ function isInConvex(R, S){
  */
 function convex(A, B, C, D){
 	let S = [A, B, C, D];
-	for(let i=0; i<4; ++i){
-		let [A, B, C, R] = S;
-		if(isInTriangle(R, A, B, C)){
-			S.pop();
-			return S;
+	//собираем в кучку первые и последние точки, они точно не могут быть внутренними
+	let ang = new Set();
+	S.sort((a,b)=>(a.x-b.x));
+	ang.add(S[0]); ang.add(S[3]);
+	S.sort((a,b)=>(a.y-b.y));
+	ang.add(S[0]); ang.add(S[3]);
+	
+	S = S.filter(a=>(!ang.has(a))); //Оставим в S кандидатов на внутренние
+	
+	
+	if(S.length === 2){
+		let R = S.pop();
+		if(isInTriangle(R, S[0], ...ang)){
+			//R внутри 
+			return [S[0], ...ang];
 		}
-		S.unshift(S.pop());
+		else{
+			//R снаружи, S[0] осталась под подозрением
+			ang.add(R);
+		}
 	}
+	
+	//Одна подозрительная точка, проверим её
+	if(S.length === 1 && isInTriangle(S[0], ...ang)){
+		return [...ang];
+	}
+
+
 	//Это не треугольник, найдём порядок вершин
 	if(intersectLinePart(A, B, C, D)){
 		//AB и CD пересекаются, мы нашли диагонали

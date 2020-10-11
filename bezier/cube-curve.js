@@ -8,12 +8,20 @@ const  {
 	splitCond
 	join,
 	joins,
-	proj
+	proj,
+	coeff,
+	coeffsXY
 } = require('./base.js');
 
-const coeff = require('./coeff.js');
+const{
+	abs
+} = Math;
 
-const cube = require('./cube-equation.js');
+const {
+	approxCrossing
+} = require('./iterators.js');
+
+const PolynomX = require('./polynom-x.js');
 
 /**
  * Функция оценки кривизны
@@ -42,49 +50,6 @@ function aphineAD(B){
 }
 
 /**
- * Находит экстремумы одномерной кубической кривой
- */
-function extremal(Y){
-	const dotY = delta(Y), ddotY = delta(dotY);
-	
-	const [c,b,a] = coeff(dotY); //Коэффициенты квадратного уравнения
-	
-	const critical = cube(0, a, b, c);
-	
-	const values = new Map();
-	
-	const maximum = new Set();
-	const minimum = new Set();
-	const supremum = 0;
-	const infimum = 0;
-	
-	for(let t of critical){
-		let y = point(Y,t);
-		values.set(t,y);
-		let s = point(ddotY, t);
-		if(s>Number.EPSILON){
-			maximum.add(t);
-			if(y>supremum){
-				supremum = y;
-			}
-		}
-		else if(s<-Number.EPSILON){
-			minimum.add(t);
-			if(y<infimum){
-				infimum = y;
-			}
-		}
-	}
-	return {
-		values,
-		maximum.
-		minimum,
-		supremum,
-		infimum
-	}
-}
-
-/**
  * Находит опорные точки одномерной кривой, описывающей псевдоскалярное произведение
  * первой и второй производных исходной кубической кривой
  *
@@ -94,25 +59,13 @@ function extremal(Y){
 function getKPoints(B){
 	let dotB = dot(B); //Опорные точки первой производной
 	let ddotB = dot(dotB); //Опорные точки второй производной
-	let K = Array.from({length:4}, (_, i)=>{
-		let j = 3-i;
-		let res = 0;
-		if(j>0){
-			let part = dotB[i].cross(ddotB[0]);
-			if(j<3){
-				part = part*j/3;
-			}
-			res += part;
-		}
-		if(i>0){
-			let part = dotB[i-1].cross(ddotB[1]);
-			if(i<3){
-				part = part*i/3;
-			}
-			res += part;
-		}
-		return res;
-	});
+	
+	let K = [
+		dotB[0].cross(ddotB[0]),
+		(dotB[0].cross(ddotB[1])+2*dotB[1].cross(ddotB[0]))/3,
+		(2*dotB[1].cross(ddotB[1])+dotB[2].cross(ddotB[0]))/3,
+		dotB[2].cross(ddotB[1])
+	];
 	return K;
 }
 
@@ -123,8 +76,8 @@ function getKPoints(B){
  */
 function inflection(B){
 	let K = getKPoints(B);
-	let c = coeff(C);
-	let t = cube(c).filter((t)=>(t>=0 && t<=1));
+	let c = coeff(K);
+	let t = new PolynomX(...c).realRoots().filter((t)=>(t>=0 && t<=1));
 	
 	return t;
 }
@@ -146,10 +99,61 @@ function splitInflection(B){
 }
 
 
+/**
+ * Проверяет, лежит ли точка A на кривой, и если да, находит её аргумент
+ */
+function findArgument(curve, A){
+	const P = coeffsXY(curve).map((K)=>(new PolynomX(...K)));
+	
+	//Подстановка переменных должна обращать многочлены в нули
+	const TOLERANCE = 1e-4;
+	const ctrl = A.every((x, i)=>(
+		abs(P[i].eval(x))<TOLERANCE
+	));
+	
+	if(!ctrl){
+		return NaN;
+	}
+	
+	//Приравняв многочлен к значению координаты - получим уравнения
+	//P(t) - x = 0
+	const E = P.map((p, i)=>(p.addnew(-A[i])));
+	//Решая эти уравнения для каждой переменной, получим два массива корней
+	const xRoots = E[0].realRoots().filter(a=>(a>=0 && a<=1)); //Кубическое уравнение не требует заданной точности
+	const yRoots = E[1].realRoots().filter(a=>(a>=0 && a<=1));
+	
+	//Берём первое значение итератора
+	let t = approxCrossing(xRoots, yRoots, TOLERANCE, (a,b)=>((a+b)/2)).next().value;
+	
+	return t;
+}
 
+/**
+ * Рассчитвает необходимую точность аргумента кривой
+ * для обеспечения погрешности точек 
+ * @param curve : Array<Vector2> - кривая, заданная опорными точками
+ * @param epsilon : Number - допустимая погрешность точек
+ */
+function argumentEpsilon(curve, epsilon){
+	const P = coeffsXY(curve).map((K)=>(new PolynomX(...K).diff()));
+	const C = P.map((P)=>(
+		P.diff.realRoots().filter(t=>(t>=0 && t<=1))
+			.concat([0,1])
+			.map((t)=>(abs(P.eval(t))))
+	));
+	
+	const m = Math.max(...C.flat());
+	
+	//m = dx/dt
+	//dt = dx/m
+	
+	return m>1 ? epsilon/m : epsilon;
+}
 
 module.exports = {
 	curvature,
 	inflection,
-	splitInflection
+	splitInflection,
+	findArgument,
+	argumentEpsilon
 };

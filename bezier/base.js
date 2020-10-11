@@ -5,7 +5,8 @@
 const {symbols:{SUB, ADD, MUL, DIV}} = require('@grunmouse/multioperator-ariphmetic');
 
 const {
-	multinom
+	multinom,
+	binom
 } = require('./math.js');
 
 /**
@@ -215,6 +216,26 @@ function coeffsXY(curve){
 	return Array.from(curve[0], (_, i)=>(
 		coeff(proj(curve, i))
 	));
+}
+
+/**
+ * Находит точки одномерной кривой по её коэффициентам
+ */
+function points(c){
+	let n = c.length-1;
+	let K = [];
+	c.forEach((cj, j)=>{
+		let res = cj/binom(n,j);
+		for(let k=1; k<=j; ++k){
+			let part = binom(j,k)*[j-k];
+			if(k & 1 === 1){
+				part = -part;
+			}
+			res += part;
+		}
+		K[j] = res;
+	});
+	return K;
 }
 
 module.exports = {

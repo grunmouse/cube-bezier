@@ -74,6 +74,16 @@ class NodeOfCurve{
 		node.sibling = this;
 	}
 	
+	/**
+	 * Исключает текущий полуузел и привязывает к его сиблингу переданный узел
+	 * Используется для исправлений в цепочке сегментов
+	 */
+	self_replace(node){
+		this.sibling.connect(node);
+		this.sibling = undefined;
+		this.excluded = true;
+	}
+	
 	get isEnd(){
 		return !!this.segment && !this.sibling
 	}

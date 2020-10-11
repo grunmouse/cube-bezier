@@ -5,6 +5,10 @@ class SegmentPoint{
 		this.t = t;
 	}
 	
+	eq(p){
+		return this === p || this.segment.eq(p.segment) && this.segment.approxEqual(this.t, p.t);
+	}
+	
 	connect(p){
 		this.intersect = p;
 		p.intersect = this;

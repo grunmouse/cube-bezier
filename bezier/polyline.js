@@ -11,7 +11,7 @@ const  {
  */
 function onedistance(B){
 	const dotB = delta(B);
-	const e = dotB.map((v)=>(v.ort().rotOrto(1));
+	const e = dotB.map((v)=>(v.ort().rotOrto(1)));
 	const r = [];
 	const n = B.length-1;
 	r[0] = e[0];

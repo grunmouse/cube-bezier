@@ -33,7 +33,7 @@ function multinom(...arr){
 }
 
 function binom(n, i){
-	return factorial(n)/factorial(i)/factorial(n-1);
+	return factorial(n)/factorial(i)/factorial(n-i);
 }
 
 /**

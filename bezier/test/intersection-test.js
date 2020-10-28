@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 
-const Intersection = require('../intersect.js');
+const Intersection = require('./intersect.js');
 const {Vector2} = require('@grunmouse/math-vector');
 const {
 	point
@@ -52,7 +52,7 @@ describe('Intersection', ()=>{
 			const oldD = oldA.sub(oldB).abs();
 			const curD = curA.sub(curB).abs();
 			
-			console.log(newD, curD);
+			console.log(curD, oldD);
 		}
 		
 		

@@ -22,26 +22,8 @@ const {
 	abs
 } = Math;
 
-/**
- * Итерирует пересечение числовых массивов, считая числа равными, если они в эпсилон-окрестности друг друга
- */
-function *approxCrossing(a, b, epsilon, handle){
-	if(!a.length || !b.length) return;
-	
-	forx:for(let x of a){
-		for(let y of b){
-			if(abs(x-y)<=epsilon){
-				if(handle){
-					yield handle(x,y);
-				}
-				else{
-					yield x;
-				}
-				continue forx;
-			}
-		}
-	}
-}
+const {approxCrossing} = require('./iterators.js');
+
 
 /**
  * Находит точку или точки пересечения кривых, заданных опорными точками

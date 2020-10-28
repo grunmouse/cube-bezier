@@ -9,29 +9,6 @@ const {
 	binom
 } = require('./math.js');
 
-/**
- * Перечисляет пары элементов массива от первого до последнего
- */
-function pairs(arr){
-	let len = arr.length-1;
-	let res = [];
-	for(let i=0;i<len; ++i){
-		res.push([arr[i],arr[i+1]]);
-	}
-	return res;
-}
-/**
- * Перечисляет пары элементов массива, добавляя к ним пару последнего с первым
- */
-function opairs(arr){
-	let len = arr.length-1;
-	let res = [];
-	for(let i=0;i<len; ++i){
-		res.push([arr[i],arr[i+1]]);
-	}
-	res.push([arr[len],arr[0]]);
-	return res;
-}
 
 /**
  * Сводит массив точек к массиву промежуточных точек с параметром t
@@ -93,90 +70,6 @@ function dot(arr){
 }
 
 /**
- * Делит кривую Безье в пропорции t методом Кастеляу.
- */
-function split(arr, t){
-	let len = arr.length, arrs = [arr];
-	for(let i=1; i<len;++i){
-		arrs[i] = reduce(arrs[i-1], t);
-	}
-	let C = [], D = [];
-	for(let i=0; i<len;++i){
-		C.push(arrs[i][0]);
-		D.unshift(arrs[i][arrs[i].length-1]);
-	}
-	return [C,D];
-}
-
-/**
- * Делит кривую несколько раз 
- */
-function splits(arr, T){
-	let ret = [], start = 0;
-	let C = arr;
-	for(let i=0, len = T.length; i<len; ++i){
-		let at = T[i];
-		if(at>0 && at< 1){
-			let t = (at-start)/(1-start);
-			let [A, B] = split(C, t);
-			ret.push(A);
-			C = B;
-		}
-		start = at;
-	}
-	ret.push(C);
-	return ret;
-}
-
-/**
- * Восстанавливает разделённую кривую Безье и пропорцию её разбиение
- */
-function join(B, C){
-	if(!B[3].eq(C[0])){
-		throw new Error('Bezier curves is not connected');
-	}
-	
-	let t = B[3].sub(B[2]).abs()/C[1].sub(B[2]).abs();
-	if(isNaN(t) || t==0){
-		t=0.5;
-	}
-	
-	let M = B[1].sub(B[0].mul(1-t)).div(t);
-	let N = C[2].sub(C[3].mul(t)).div(1-t);
-	
-	return [[B[0], M, N, C[3]], t];
-}
-/**
- * Восстанавливает кривую, разделённую на несколько частей и массив пропорций разбиения
- */
-function joins(arrs){
-	return arrs.reduce((akk, B)=>{
-		if(!akk){
-			return [B, [0]];
-		}
-		let [A, T] = akk, t;
-		
-		[A, t] = join(A, B);
-		T = T.map((s)=>(s*t));
-		T.push(t);
-		return [A, T];
-	});
-}
-
-/**
- * Делит кривую Безье пополам до тех пор, пока её части не станут удовлетворять условию
- */
-function splitCond(curve, cond){
-	if(cond(curve)){
-		return [curve];
-	}
-	else{
-		let [C,D] = split(curve, 0.5).map(a=>(condSplit(a)));
-		return C.concat(D);
-	}
-}
-
-/**
  * Возвращает проекцию кривой на ось
  * @param curve : Array<Vector>
  * @param axis : (number|string) - номер координаты или имя оси, если класс вектора поддерживает имена
@@ -227,11 +120,11 @@ function points(c){
 	c.forEach((cj, j)=>{
 		let res = cj/binom(n,j);
 		for(let k=1; k<=j; ++k){
-			let part = binom(j,k)*[j-k];
+			let part = binom(j,k)*K[j-k];
 			if(k & 1 === 1){
 				part = -part;
 			}
-			res += part;
+			res -= part;
 		}
 		K[j] = res;
 	});
@@ -239,19 +132,13 @@ function points(c){
 }
 
 module.exports = {
-	pairs,
-	opairs,
 	reduce,
 	point,
 	delta,
 	odelta,
 	dot,
-	split,
-	splits,
-	splitCond,
-	join,
-	joins,
 	coeff,
 	coeffsXY,
+	points,
 	proj
 };

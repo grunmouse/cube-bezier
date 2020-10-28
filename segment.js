@@ -23,6 +23,12 @@ class Segment{
 				enumerable:true,
 				writable:false,
 				value:nodeB
+			},
+			crossing:{
+				configurable:true,
+				enumerable:false,
+				writable:false,
+				value:new Map()
 			}
 		});
 		//this.nodeA = nodeA;
@@ -30,6 +36,7 @@ class Segment{
 		
 		nodeA.segment = this;
 		nodeB.segment = this;
+		
 	}
 	
 	get points(){

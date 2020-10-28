@@ -11,10 +11,10 @@
  * rakov, 2020
  */
 
-const PolynomX = require('./polynom-x.js');
+const PolynomX = require('../polynom-x.js');
 const {Vector2} = require('@grunmouse/math-vector');
-const coeff = require('./coeff.js');
-const {resultant3x3} = require('./resultant.js');
+const {coeff} = require('../base.js');
+const {resultant3x3} = require('../resultant.js');
 const {abs} = Math;
 
 

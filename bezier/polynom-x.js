@@ -301,22 +301,4 @@ class PolynomX{
 	}
 }
 
-//console.log((new PolynomX(-42,0,-12,1)).div(new PolynomX(-3,1)));
-//console.log((new PolynomX(3,1,-2,1)).div(new PolynomX(-3,-2)));
-//console.log((new PolynomX(1,0,-1,0,2,1)).div(new PolynomX(2,-4)));
-//console.log((new PolynomX(0,1,0,-1,0,2,1)).div(new PolynomX(2,-4,0,0,1)));
-//console.log((new PolynomX(0,1,0,-1,0,2,1)).div(new PolynomX(0,2,-4,0,0,1)));
-//console.log((new PolynomX(1,0,-1,0,2,1)).div(new PolynomX(2,-4,0,0,1)));
-
-//console.log(a.mul(a));
-//let a = new PolynomX(0,0,2);
-
-//let x = Array.from({length:9}, Math.random).sort(), epsilon = 1e-6;
-
-//let p = x.reduce((p, x)=>(p.mulnew(-x,1)), new PolynomX(1));
-
-//let r = p.realRoots(epsilon);
-
-//console.log(x);
-//console.log(r.map((r,i)=>(r-x[i])));
 module.exports = PolynomX;

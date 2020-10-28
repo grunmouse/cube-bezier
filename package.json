@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grunmouse/binary": "link:..\\binary",
     "@grunmouse/math-matrix": "link:..\\math-matrix",
     "@grunmouse/math-vector": "link:..\\math-vector",
     "@grunmouse/multioperator-ariphmetic": "link:..\\multioperator-ariphmetic",
@@ -16,6 +17,8 @@
   },
   "devDependencies": {
     "@grunmouse/assert": "link:..\\assert",
+    "@grunmouse/jsverify-env": "link:..\\jsverify-env",
+    "jsondiffpatch": "^0.4.1",
     "jsverify": "^0.8.4"
   }
 }

@@ -52,10 +52,17 @@ function angleSub(a, b){
 	return d;
 }
 
+/**
+ * Функция Хевисайда
+ */
+function theta(x){
+	return x>=0 ? 1 : 0;
+}
 
 module.exports = {
 	factorial,
 	binom,
 	multinom,
-	angleSub
+	angleSub,
+	theta
 }

@@ -17,6 +17,7 @@ $$J_{3,3} = t^3.$$
 
 ## Первая производная
 
+
 $$\dot P_3(t) = \sum_{i=0}^3 B_i \dot J_{3,i}(t).$$
 
 $$\dot J_{3,0} = -3 (1-t)^2;$$
@@ -35,14 +36,14 @@ $$\frac {\dot P_3}{3} = t^0(1-t)^{2-0} (B_{0+1}-B_0) + 2 t^1(1-t)^{2-1}(B_{1+1}-
 $$\frac {\dot P_3}{3} = \sum_{i=0}^2 \binom{2}{i} t^i(1-t)^{2-i}(B_{i+1}-B_i);$$
 
 Введём
-$$\dot B_i = B_{i+1}-B_i.$$
+$$\Delta B_i = B_{i+1}-B_i.$$
 
-$$\dot P_3 = 3 P_{2,\dot B};$$
+$$\dot P_3 = 3 P_{2,\Delta B};$$
 
 ## Вторая производная
 
-$$\dot P_3 = 3 P_{2,\dot B};$$
-$$\ddot P_3 = 3 \dot P_{2,\dot B};$$
+$$\dot P_3 = 3 P_{2,\Delta B};$$
+$$\ddot P_3 = 3 \dot P_{2,\Delta B};$$
 
 $$J_{2,0} = (1-t)^2;$$
 $$J_{2,1} = 2 t(1-t) = 2(t-t^2);$$
@@ -52,105 +53,10 @@ $$\dot J_{2,0} = -2(1-t);$$
 $$\dot J_{2,1} = 2 (1-2t);$$
 $$\dot J_{2,2} = 2t.$$
 
-$$\dot P_{2,\dot B} = -2(1-t)\dot B_0 + 2 (1-2t) \dot B_1 + 2t \dot B_2;$$
-$$\frac{\dot P_{2,\dot B}}{2} = -(1-t)\dot B_0 + (1-t) \dot B_1 + (-t) \dot B_1 + t \dot B_2;$$
-$$\frac{\dot P_{2,\dot B}}{2} = (1-t) (\dot B_1 - \dot B_0) + t (\dot B_2 - \dot B_1);$$
-$$\dot P_{2,\dot B} = 2 P_{1,\ddot B}.$$
+$$\dot P_{2,\Delta B} = -2(1-t)\Delta B_0 + 2 (1-2t) \Delta B_1 + 2t \Delta B_2;$$
+$$\frac{\dot P_{2,\Delta B}}{2} = -(1-t)\Delta B_0 + (1-t) \Delta B_1 + (-t) \Delta B_1 + t \Delta B_2;$$
+$$\frac{\dot P_{2,\Delta B}}{2} = (1-t) (\Delta B_1 - \Delta B_0) + t (\Delta B_2 - \Delta B_1);$$
+$$\dot P_{2,\Delta B} = 2 P_{1,\Delta^2 B}.$$
 
-$$\ddot P_{3,B} = 6 P_{1,\ddot B};$$
+$$\ddot P_{3,B} = 6 P_{1,\Delta^2 B};$$
 
-## Кривизна
-
-$$k=\frac{\dot P \times \ddot P}{\left|\dot P\right|^3}.$$
-
-$$k_3
-=\frac{\dot P_{3,B} \times \ddot P_{3,B}}{\left|\dot P_{3,B}\right|^3}
-=\frac{(3 P_{2,\dot B}) \times (6 P_{1,\ddot B})}{\left|3 P_{2,\dot B}\right|^3}
-=\frac{18(P_{2,\dot B} \times P_{1,\ddot B})}{27\left|P_{2,\dot B}\right|^3}
-=\frac{2(P_{2,\dot B} \times P_{1,\ddot B})}{3\left|P_{2,\dot B}\right|^3}.
-$$
-
-$$P_{2,\dot B} \times P_{1,\ddot B} 
-= 
-\left( \sum_{i=0}^2 \dot B_i J_{2,i} \right) 
-\times
-\left( \sum_{j=0}^1 \ddot B_j J_{1,j} \right) 
-= 
-\sum_{i=0}^2 \left( 
-	\dot B_i J_{2,i}
-	\times
-	\left( \sum_{j=0}^1 \ddot B_j J_{1,j} \right) 
-\right) 
-;$$
-
-$$P_{2,\dot B} \times P_{1,\ddot B} 
-= 
-\sum_{i=0}^2 \left( 
-	\sum_{j=0}^1 \left(
-		\dot B_i J_{2,i}
-		\times
-		\ddot B_j J_{1,j} 
-	\right) 
-\right) 
-= 
-\sum_{i=0}^2
-\sum_{j=0}^1 \left(
-		J_{2,i} J_{1,j} 
-		\dot B_i 
-		\times
-		\ddot B_j 
-\right) 
-$$
-
-$$J_{2,0} = (1-t)^2;$$
-$$J_{2,1} = 2 t(1-t);$$
-$$J_{2,2} = t^2.$$
-$$J_{1,0} = (1-t);$$
-$$J_{1,1} = t.$$
-
-$$J_{2,0}J_{1,0} = (1-t)^3 = J_{3,0};$$
-$$J_{2,1}J_{1,0} = 2 t(1-t)^2 = \frac{2}{3} J_{3,1};$$
-$$J_{2,2}J_{1,0} = t^2 (1-t) = \frac{1}{3} J_{3,2};$$
-$$J_{2,0}J_{1,1} = t(1-t)^2 = \frac{1}{3} J_{3,1};$$
-$$J_{2,1}J_{1,1} = 2 t^2(1-t) = \frac{2}{3} J_{3,2};$$
-$$J_{2,2}J_{1,1} = t^3 = J_{3,3}.$$
-
-$$P_{2,\dot B} \times P_{1,\ddot B} 
-= J_{3,0} \dot B_0 \times \ddot B_0 
-+
-\frac{2}{3} J_{3,1} \dot B_1 \times \ddot B_0 
-+
-\frac{1}{3} J_{3,1} \dot B_0 \times \ddot B_1 
-+
-\frac{1}{3} J_{3,2} \dot B_2 \times \ddot B_0 
-+
-\frac{2}{3} J_{3,2} \dot B_1 \times \ddot B_1
-+
-J_{3,3}  \dot B_2 \times \ddot B_1;
-$$
-$$P_{2,\dot B} \times P_{1,\ddot B} 
-= 
-J_{3,0} \dot B_0 \times \ddot B_0 
-+J_{3,1} \left( \frac{2}{3} \dot B_1 \times \ddot B_0 + \frac{1}{3} \dot B_0 \times \ddot B_1 \right)
-+J_{3,2} \left( \frac{1}{3} \dot B_2 \times \ddot B_0 + \frac{2}{3} \dot B_1 \times \ddot B_1 \right)
-+J_{3,3} \dot B_2 \times \ddot B_1;
-$$
-
-$$\begin{gathered}
-K_{3,0} = \dot B_0 \times \ddot B_0,\\
-K_{3,1} =
-\frac{1}{3} \dot B_0 \times \ddot B_1 
-+
-\frac{2}{3} \dot B_1 \times \ddot B_0 
-,\\
-K_{3,2} =
- \frac{2}{3} \dot B_1 \times \ddot B_1 
- +
- \frac{1}{3} \dot B_2 \times \ddot B_0 
-,\\
-K_{3,3} = \dot B_2 \times \ddot B_1;
-\end{gathered}$$
-
-$$P_{2,\dot B} \times P_{1,\ddot B} = P_{3,K}.$$
-
-$$K_{3,i} = \frac{1}{3}\left( (3-i) \dot B_i \times \ddot B_0 + i \dot B_{i-1} \times \ddot B_1 \right).$$

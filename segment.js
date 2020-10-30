@@ -28,7 +28,7 @@ class Segment{
 				configurable:true,
 				enumerable:false,
 				writable:false,
-				value:new Map()
+				value:[]
 			}
 		});
 		//this.nodeA = nodeA;

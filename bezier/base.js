@@ -6,7 +6,8 @@ const {symbols:{SUB, ADD, MUL, DIV}} = require('@grunmouse/multioperator-ariphme
 
 const {
 	multinom,
-	binom
+	binom,
+	theta
 } = require('./math.js');
 
 
@@ -129,6 +130,34 @@ function points(c){
 		K[j] = res;
 	});
 	return K;
+}
+
+/**
+ * Находит кривую, соответствующую произведению двух кривых
+ */
+function multiple(A, B, TIMES){
+	const m = A.length-1, n = b.length-1;
+	const Ctor = A[0].constructor;
+	
+	const M = [];
+	
+	for(let k=0; k<=m+n; ++k){
+		let val = new Ctor();
+		const dividend = binom(n+m, k);
+		for(let i = 0; i<=n; ++i){
+			let j = k-i;
+			if(theta(j) && theta(m-j)){
+				const coeff = binom(n, i)*binom(m,j);
+				
+				let part = A[j][TIMES](B[i])[MUL](coeff)
+				
+				val = val[ADD](part);
+			}
+		}
+		val = val[DIV](dividend);
+		
+		M[k] = val;
+	}
 }
 
 module.exports = {

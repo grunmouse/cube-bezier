@@ -142,6 +142,12 @@ $$
 \left\{\begin{gathered}
  a = \frac{m^3}{3A_3}\left(\frac{A_2}{m^2} - B_2 \right), \\
  A_3 \ne 0,\\
+ B_3 \ne 0;
+\end{gathered}\right.
+\Rightarrow
+\left\{\begin{gathered}
+ a = \frac{1}{3B_3}\left(\frac{A_2}{m^2} - B_2 \right), \\
+ A_3 \ne 0,\\
  B_3 \ne 0.
 \end{gathered}\right.
 $$
@@ -160,6 +166,14 @@ $$
  A_2 \ne 0,
  B_2 \ne 0,\\
  A_3 = 0,
+ B_3 = 0;
+\end{gathered}\right.
+\Rightarrow
+\left\{\begin{gathered}
+ a = \frac{1}{2B_2}\left(\frac{A_1}{m} - B_1 \right), \\
+ A_2 \ne 0,
+ B_2 \ne 0,\\
+ A_3 = 0,
  B_3 = 0.
 \end{gathered}\right.
 $$
@@ -174,6 +188,13 @@ $$
 \Rightarrow
 \left\{\begin{gathered}
  a = \frac{m}{A_1} \left(A_0 - B_0 \right), \\
+ A_1 \ne 0, B_1 \ne 0,\\
+ A_2 = 0, B_2 = 0,\\
+ A_3 = 0, B_3 = 0.
+\end{gathered}\right.
+\Rightarrow
+\left\{\begin{gathered}
+ a = \frac{1}{B_1} \left(A_0 - B_0 \right), \\
  A_1 \ne 0, B_1 \ne 0,\\
  A_2 = 0, B_2 = 0,\\
  A_3 = 0, B_3 = 0.
@@ -203,7 +224,7 @@ $$A'\left(-\frac{a}{m}\right) = m B_1.$$
 $$\left\{\begin{gathered}
  A_3 \ne 0, B_3 \ne 0,\\
  m^3 = \frac{A_3}{B_3},\\
- a = \frac{m^3}{3A_3}\left(\frac{A_2}{m^2} - B_2 \right), \\
+ a = \frac{1}{3B_3}\left(\frac{A_2}{m^2} - B_2 \right), \\
  b = m+a,\\
  A'\left(-\frac{a}{m}\right) = m B_1, \\
  A\left(-\frac{a}{m}\right) = B_0. \\
@@ -214,7 +235,7 @@ $$\left\{\begin{gathered}
  A_3 = 0, B_3 = 0,\\
  A_2 \ne 0, B_2 \ne 0,\\
  m^2 = \frac{A_2}{B_2},\\
- a = \frac{m^2}{2A_2}\left(\frac{A_1}{m} - B_1 \right), \\
+ a = \frac{1}{2B_2}\left(\frac{A_1}{m} - B_1 \right), \\
  b = m+a,\\
  A\left(-\frac{a}{m}\right) = B_0. \\
 \end{gathered}\right.
@@ -225,7 +246,7 @@ $$\left\{\begin{gathered}
  A_2 = 0, B_2 = 0,\\
  A_1 \ne 0, B_1 \ne 0,\\
  m = \frac{A_1}{B_1},\\
- a = \frac{m}{A_1} \left(A_0 - B_0 \right), \\
+ a = \frac{1}{B_1} \left(A_0 - B_0 \right), \\
  b = m+a.
 \end{gathered}\right.
 $$

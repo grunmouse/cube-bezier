@@ -16,6 +16,10 @@ const {
 	isIntersectConvex
 } = require('./polyline.js');
 
+const {
+	subcurve
+} = require('./cube-curve.js');
+
 const  PolynomX = require('./polynom-x.js');
 
 const {
@@ -125,7 +129,29 @@ function intersectCurveSelf(A){
 }
 
 
+/**
+ * Проверяет, описываются ли кривые A и B одним уравнением и находит их соотношение
+ */
+function asSubcurve(A, B){
+	const [cAx, cAy] = coeffsXY(A);
+	const [cBx, cBy] = coeffsXY(B);
+	
+	const [ax, bx] = subcurve(cAx, cBx);
+	const [ay, by] = subcurve(cAy, cBy);
+	
+	let TOLERANCE = 1e-4;
+	
+	if(abs(ax-ay) <= TOLERANCE && abs(bx-by) <= TOLERANCE){
+		return [(ax+ay)/2, (bx+by)/2];
+	}
+	
+	return false;
+	
+}
+
+
 module.exports = {
 	intersectCurves,
-	intersectCurveSelf
+	intersectCurveSelf,
+	asSubcurve
 };

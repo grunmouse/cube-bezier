@@ -150,9 +150,55 @@ function argumentEpsilon(curve, epsilon){
 	return m>1 ? epsilon/m : epsilon;
 }
 
+/**
+ * Проверяте кубические полиномы на приводимость друг к другу линейной заменой аргумента
+ * @param A - коэффициенты полинома A
+ * @param B - коэффициенты полинома B
+ */
+function subcurve(A, B){
+	let pA = new PolynomX(...A);
+	let pB = new PolynomX(...B);
+	let dA = dA.diff;
+	
+	const TOLERANCE = 1e-4;
+
+	if(pA.deg === 3 && pB.deg === 3){
+		let m3 = A[3]/B[3];
+		let m = Math.cbrt(m3);
+		let a = (A[2]*m**2 - B[2])/B[3]/3;
+		
+		if(
+			abs(dA.eval(-a/m) - m*B[1])<=TOLERANCE
+			&&
+			abs(pA.eval(-a/m) - B[0])<=TOLERANCE
+		){
+			let b = m+a;
+			return [a,b];
+		}
+	}
+	else if(pA.deg === 2 && pB.deg === 2){
+		let m2 = A[2]/B[2];
+		let m = Math.sqrt(m2);
+		let a = (A[1]/m - B[1])/B[2]/2;
+		if(abs(pA.eval(-a/m) - B[0])<=TOLERANCE){
+			let b = m+a;
+			return [a,b];
+		}
+	}
+	else if(pA.deg === 1 && pB.deg === 1){
+		let m = A[1]/B[1];
+		let a = (A[0] - B[0])/B[1];
+		let b = m+a;
+		return [a,b];
+	}
+	
+	return false;
+}
+
 module.exports = {
 	curvature,
 	inflection,
+	subcurve,
 	splitInflection,
 	findArgument,
 	argumentEpsilon

@@ -1,23 +1,21 @@
-
+const  {
+	delta,
+	odelta,
+	dot,
+	points,
+	proj
+} = require('./base.js');
 
 /**
  * Проверяет, попадает ли точка R в прямоугольную область между вершинами AB
  * Если подставить коллинеарные вектора - это будет проверка на R \in AB
  */
-function isIn(R, A, B){
+function isIn(R, [A, B]){
 	let AR = R.sub(A), AB = B.sub(A);
 	
-	for(let i=0; i<R.lenght; ++i){
-		if(Math.abs(AB[i])<Number.EPSILON){
-			if(Math.abs(AR[i])>Number.EPSILON){
-				return false
-			}
-		}
-		else{
-			let x = AR[i]/AB[i];
-			if(x<0 || x>1){
-				return false;
-			}
+	for(let i=0; i<R.length; ++i){
+		if(AR[i]<0 || AR[i]>AB[i]){
+			return false;
 		}
 	}
 	return true;
@@ -36,24 +34,36 @@ function rectangleArea(B){
 		return [min, max];
 	});
 	
-	let result = [0,1].map((i)=>(Ctor(...proj(limits, i))));
+	let result = [0,1].map((i)=>(new Ctor(...proj(limits, i))));
 	
 	return result;
 }
 
+
 /**
- * Проверяет, пересекаются ли прямоугольные области, заданные угловыми точками
+ * Находит прямоугольную область, являющуюся пересечением
  */
-function isIntersectRectagle(A, B, C, D){
-	//Чтобы прямоугольные области пересекались, нужно чтобы пересекались их проекции на каждую ось
-	return A.every((_, i)=>{
-		//проекции пересекаются, если одна из крайних точек одного отрезка находится внутри на другого отрезка
-		return isIn(A[i], C[i], D[i]) || isIn(B[i], C[i], D[i]);
+function intersectRectangle(A, B, C, D){
+	let limits = A.every((_, i)=>{
+		if(A[i]<=C[i] && C[i]<=B[i]){
+			return [C[i], B[i]];
+		}
+		else if(C[i]<=A[i] && A[i]<=D[i]){
+			return [A[i], D[i]];
+		}
 	});
+	
+	if(limits.some(a=>(!a))){
+		return ;
+	}
+	
+	let result = [0,1].map((i)=>(new Ctor(...proj(limits, i))));
+	
+	return result;
 }
 
 module.exports = {
 	isIn,
 	rectangleArea,
-	isIntersectRectagle
+	intersectRectangle
 };

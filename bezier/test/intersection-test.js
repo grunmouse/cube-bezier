@@ -52,7 +52,7 @@ describe('Intersection', ()=>{
 			const oldD = oldA.sub(oldB).abs();
 			const curD = curA.sub(curB).abs();
 			
-			console.log(curD, oldD);
+			assert.ok(curD <=oldD);
 		}
 		
 		

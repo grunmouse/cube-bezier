@@ -123,7 +123,9 @@ describe('bezier', ()=>{
 		
 		return true;
 	});
-	jsc.property('splits', bezier, 'incarray 2 o_o', env, (A, tt)=>{
+	jsc.property('splits', bezier, 'incarray 2 (int 1 999)', env, (A, tt)=>{
+		tt = tt.map(t=>(t/1000))
+		//console.log(tt);
 		let P = splits(A, tt);
 		
 		deepApprox(P[0][3], point(A, tt[0]), 5e-5);

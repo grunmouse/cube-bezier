@@ -130,15 +130,18 @@ $$\theta(x)=\begin{cases} 0, & x<0;
 
 И преобразуем
 
-$$P_{m, A} \times P_{n, B} = \sum_{k=0}^{m+n} \sum_{i=0}^{n} \theta(k-i)\theta(m-k-i) \binom{n}{i} \binom{m}{k-i} \binom{n+m}{i+k-i}^{-1} J_{n+m,k} A_{k-i} \times B_i;$$
+$$P_{m, A} \times P_{n, B} = \sum_{k=0}^{m+n} \sum_{i=0}^{n} \theta(j)\theta(m-j) \binom{n}{i} \binom{m}{j} \binom{n+m}{i+j}^{-1} J_{n+m,k} A_{j} \times B_i;$$
 
-$$P_{m, A} \times P_{n, B} = \sum_{k=0}^{m+n} \sum_{i=0}^{n} \theta(k-i)\theta(m-k-i) \binom{n}{i} \binom{m}{k-i} \binom{n+m}{k}^{-1} J_{n+m,k} A_{k-i} \times B_i;$$
+$$P_{m, A} \times P_{n, B} = \sum_{k=0}^{m+n} \sum_{i=0}^{n} \theta(k-i)\theta(m-k+i) \binom{n}{i} \binom{m}{k-i} \binom{n+m}{k}^{-1} J_{n+m,k} A_{k-i} \times B_i;$$
+
 $$P_{m, A} \times P_{n, B} 
-= \sum_{k=0}^{m+n} \binom{n+m}{k}^{-1} J_{n+m,k} \sum_{i=0}^{n} \theta(k-i)\theta(m-k-i) \binom{n}{i} \binom{m}{k-i} A_{k-i} \times B_i;$$
+= \sum_{k=0}^{m+n} \binom{n+m}{k}^{-1} J_{n+m,k} \sum_{i=0}^{n} \theta(k-i)\theta(m-k+i) \binom{n}{i} \binom{m}{k-i} A_{k-i} \times B_i;$$
 
 Обозначим:
 
-$$M_k = \binom{n+m}{k}^{-1} \sum_{i=0}^{n} \theta(k-i)\theta(m-k-i) \binom{n}{i} \binom{m}{k-i} A_{k-i} \times B_i;$$
+$$M_k = \binom{n+m}{k}^{-1} \sum_{i=0}^{n} \theta(k-i)\theta(m-k+i) \binom{n}{i} \binom{m}{k-i} A_{k-i} \times B_i;$$
+
+$$M_k = \binom{n+m}{k}^{-1} \sum_{i=\max(0,k-m)}^{\min(n,k)} \binom{n}{i} \binom{m}{k-i} A_{k-i} \times B_i;$$
 
 $$P_{m, A} \times P_{n, B} 
 = \sum_{k=0}^{m+n} M_k J_{n+m,k};$$

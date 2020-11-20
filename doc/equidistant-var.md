@@ -5,18 +5,18 @@
 Найти пару ломаных, отстоящих от неё на $s$ в обе стороны.
 
 Введём
-$$\dot B_i = B_{i+1}-B_i.$$
+$$\Delta B_i = B_{i+1}-B_i.$$
 
 Обозначим
 $$\vec{s}_i = s \begin{pmatrix}
 0 & -1\\
 1 & 0
-\end{pmatrix} \dot B_i^0;$$
+\end{pmatrix} \mathrm{ort} \Delta B_i;$$
 
-$$\vec e_{i} = \vec s_{i}^0 = \begin{pmatrix}
+$$\vec e_{i} = \mathrm{ort} \vec s_{i} = \begin{pmatrix}
 0 & -1\\
 1 & 0
-\end{pmatrix} \dot B_i^0;$$
+\end{pmatrix} \mathrm{ort} \Delta B_i;$$
 
 Найдём вектор $\vec r_i$ из четырёхугольника, образованного точками:
 $$\begin{gathered}

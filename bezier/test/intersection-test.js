@@ -4,7 +4,8 @@ const assert = require('assert');
 const Intersection = require('./intersect.js');
 const {Vector2} = require('@grunmouse/math-vector');
 const {
-	point
+	point,
+	coeffsXY
 } = require('../base.js');
 
 const {
@@ -21,7 +22,7 @@ describe('Intersection', ()=>{
 		assert.ok(intersectCurves instanceof Function);
 	});
 	
-	it('Bezier3 x Bezier3', ()=>{
+	/* it('Bezier3 x Bezier3', ()=>{
 		const a1 = new Vector2(1,5), a4 = new Vector2(4,0);
 		const b1 = new Vector2(0,1), b4 = new Vector2(5,4);
 		
@@ -56,5 +57,96 @@ describe('Intersection', ()=>{
 		}
 		
 		
+	}); */
+	
+	it('case 1', ()=>{
+		const a = [
+		  new Vector2( 10, -10 ),
+		  new Vector2( 0, -10 ),
+		  new Vector2( 0, -5 ),
+		  new Vector2( 0, 0 )
+		];
+		const b = [
+		  new Vector2( 0, 0 ),
+		  new Vector2( 0, 5 ),
+		  new Vector2( 0, 10 ),
+		  new Vector2( 10, 10 )
+		];
+		console.log(coeffsXY(b));
+		let tt = [...intersectCurves(a, b)];
+		console.log(tt);
+		assert.ok(tt.length === 1);
+		let [t,s] = tt[0];
+		assert.ok(t>1023/1024);
 	});
+	/* it('case 2', ()=>{
+		const a = [
+		  new Vector2( 0, 0   ),
+		  new Vector2( 0, 5   ),
+		  new Vector2( 0, 10  ),
+		  new Vector2( 10, 10 )
+		];
+		const b = [
+		  new Vector2( 30, 0 ),
+		  new Vector2( 0, 0  ),
+		  new Vector2( 25, 0 ),
+		  new Vector2( -5, 0 )
+		];
+	});
+	it('case 3', ()=>{
+		const a = [
+		  new Vector2( 40, -10 ),
+		  new Vector2( 40, -5  ),
+		  new Vector2( 40, 0   ),
+		  new Vector2( 30, 0   )
+		];
+		const b = [
+		  new Vector2( 30, 0 ),
+		  new Vector2( 0, 0  ),
+		  new Vector2( 25, 0 ),
+		  new Vector2( -5, 0 )
+		];
+	});
+	it('case 4', ()=>{
+		const a = [
+		  new Vector2( 40, -10 ),
+		  new Vector2( 40, -5  ),
+		  new Vector2( 40, 0   ),
+		  new Vector2( 30, 0   )
+		];
+		const b = [
+		  new Vector2( 10, 10  ),
+		  new Vector2( 30, 10  ),
+		  new Vector2( 10, -20 ),
+		  new Vector2( 30, -20 )
+		];
+	});
+	it('case 5', ()=>{
+		const a = [
+		  new Vector2( 30, -20 ),
+		  new Vector2( 40, -20 ),
+		  new Vector2( 40, -15 ),
+		  new Vector2( 40, -10 )
+		];
+		const b = [
+		  new Vector2( 10, 10  ),
+		  new Vector2( 30, 10  ),
+		  new Vector2( 10, -20 ),
+		  new Vector2( 30, -20 )
+		];
+	});
+	it('case 6', ()=>{
+		const a = [
+		  new Vector2( 45, -10 ),
+		  new Vector2( 15, -10 ),
+		  new Vector2( 40, -10 ),
+		  new Vector2( 10, -10 )
+		];
+		const b = [
+		  new Vector2( 10, 10  ),
+		  new Vector2( 30, 10  ),
+		  new Vector2( 10, -20 ),
+		  new Vector2( 30, -20 )
+		];
+	}); */
 });

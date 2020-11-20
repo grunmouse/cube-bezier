@@ -3,11 +3,6 @@ const  {
 	point,
 	delta,
 	dot,
-	split,
-	splits,
-	splitCond
-	join,
-	joins,
 	proj,
 	coeff,
 	coeffsXY

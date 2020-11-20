@@ -60,7 +60,7 @@ class NodeOfCurve{
 	 */
 	mirror(N, s){
 		if(typeof N === 'number'){
-			N = A.add(this.productV(N));
+			N = this.A.add(this.productV(N));
 		}
 		let B = N.sub(this.productV(s));
 		return new NodeOfCurve(N, B);
@@ -80,12 +80,21 @@ class NodeOfCurve{
 	 */
 	self_replace(node){
 		this.sibling.connect(node);
-		this.sibling = undefined;
+		//this.sibling = undefined; //Сиблинг продолжает ссылаться туда же
 		this.excluded = true;
+		this._actual = node;
+	}
+	
+	get actual(){
+		let start = this;
+		while(start._actual){
+			start = start._actual;
+		}
+		return start;
 	}
 	
 	get isEnd(){
-		return !!this.segment && !this.sibling
+		return !!this.segment && (!this.sibling || this.sibling.sibling !== this)
 	}
 
 	/**
@@ -98,6 +107,8 @@ class NodeOfCurve{
 	
 	/**
 	 * Итерируется по цепочке сегментов, возвращая состояния обхода
+	 * [Node, Node, Boolean, Segment]
+	 * [nodeA, nodeB, BA, segment]
 	 */
 	*itrState(){
 		let end;
@@ -116,11 +127,78 @@ class NodeOfCurve{
 	 * Итерируется по цепочке сегментов, исключая повторный проход по кольцу
 	 */
 	*itrStateOnce(){
+		//let start
 		for(let state of this.itrState()){
-			if(state[0] === this){
+			yield state;
+			if(state[1].sibling === this){
 				break;
 			}
-			yield state;
+		}
+	}
+	
+	/**
+	 * Ориентирует сегменты по направлению обхода
+	 */
+	orderSegments(){
+		let end;
+		for(let state of this.itrStateOnce()){
+			let [nodeA, nodeB, BA, segment] = state;
+			
+			if(BA){
+				segment.reverse();
+			}
+			end = segment.nodeB;
+		}
+		return [this, end, end.sibling === this];
+	}
+	
+	/**
+	 * Проставить статус проход/переход
+	 * @param code : String - код порядка проходов-перехододов данной кривой в её пересечениях
+	 */
+	setOUStatus(code){
+		let i=0, sign = Number(code[0]+'1');
+		for(let state of this.itrStateOnce()){
+			let [nodeA, nodeB, BA, segment] = state;
+			let crossing = segment.crossing[0];
+			segment.level = sign;
+			if(crossing){
+				if(i>=code.length){
+					throw new Error('Слишком короткая инструкция');
+				}
+				sign = Number(code[i]+'1')
+				crossing.setOUStatus(sign);
+				++i;
+			}
+		}
+	}
+	
+	/**
+	 * Собирает группы смежных кривых одного уровня
+	 */
+	*itrPathesByLevel(){
+		let start = this;
+		while(start){
+			let lastLevel = start.segment.level;
+			let curves = start.getCurves((finNode)=>(finNode.sibling && finNode.sibling.segment.level !== lastLevel));
+			let fin = curves.end;
+			curves.level = lastLevel
+			yield curves;
+			start = fin.sibling;
+		}
+	}
+	
+	*itrNodePoints(){
+		yield this.A;
+		for(let [_, B] of this.itrStateOnce()){
+			yield B.A;
+		}
+	}
+
+	*itrAllPoints(){
+		yield this.A;
+		for(let [nodeA, nodeB, BA, segment] of this.itrStateOnce()){
+			yield* segment.points.slice(1);
 		}
 	}
 	
@@ -138,40 +216,20 @@ class NodeOfCurve{
 	
 	getCurves(stop){
 		const result = {start:this, curves:[]};
-		for(let [cur, fin, BA, segment] of this.itrState()){
-			if(cur === this){
-				result.close = true;
-				break;
-			}
+		for(let [cur, fin, BA, segment] of this.itrStateOnce()){
+
 			result.end = fin;
-			result.curve.push(segment.curve(BA));
+			result.curves.push(segment.curve(BA));
 			if(stop && stop(fin)){
 				break;
 			}
 		}
+		result.close = (result.end.sibling === this);
 		return result;
-	}
-	
-	trace(state){
-		if(!state){
-			state = {start:this, curves:[]};
-		}
-		else if(typeof state === 'function'){
-			state = {start:this, curves:[], stop:state};
-		}
-		else if(state.start === this){
-			state.close = true;
-			return state;
-		}
-		
-		if(this.segment){
-			return this.segment.trace(this, state);
-		}
-		return state;
 	}
 
 	makePath(start, stop){
-		let {startNode, curves, close} = this.trace(stop);
+		let {start:startNode, curves, close} = this.getCurves(stop);
 		return new CurvePath(start || startNode.A, curves, close);
 	}
 	

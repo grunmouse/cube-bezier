@@ -15,13 +15,13 @@ const {
  * Находит рациональные корни уравнения x^3+ax^2+bx+c=0.
  */
 function cube_viet(a, b, c){
-	const Q = (a**2-3*b)/9;
+	const Q = (a**2 - 3*b)/9;
 	const R = (2*a**3 - 9*a*b + 27*c)/54;
 	const Q3 = Q**3;
 	const Q15 = sqrt(abs(Q3));
 	const Q05 = sqrt(abs(Q));
 	const S = Q3 - R**2;
-	
+	//console.log(S,Q);
 	if(S>0){
 		const varphi = R/Q15;
 		const phi = acos(varphi)/3;
@@ -49,7 +49,8 @@ function cube_viet(a, b, c){
 			}
 		}
 		else{
-			let x = -((c-a**3/27)**(1/3)) - a/3;
+			console.log(c,a);
+			let x = -(Math.cbrt(c - (a**3)/27)) - a/3;
 			return [x];
 		}
 	}
@@ -107,6 +108,7 @@ function linear(a, b){
  * Находит рациональные корни уравнения ax^3+bx^2+cx+t=0;
  */
 function cube(a, b, c, d){
+	a=a||0; b=b||0; c=c||0; d=d||0;
 	if(a){
 		return cube_viet(b/a, c/a, d/a);
 	}

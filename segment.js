@@ -1,14 +1,28 @@
 const Curve = require('./curve.js');
 const Node = require('./node-of-curve.js');
-const Intersection = require('./bezier/intersect.js');
+const SegmentPoint = require('./segment-point.js');
 const {POINT_TOLERANCE} = require('./constants.js');
 const abs = Math.abs;
+const {
+	propAbsolute,
+	propRelative,
+	propFilter
+} = require('./bezier/proportional.js');
 
 /**
  * Представляет кубическую кривую Безье, заданную двумя узлами с оттяжками,
  * может интерпретироваться в любом порядке
  */
 
+/**
+ * @class Segment - 
+ * @property nodeA : NodeOfCurve - начальная точка с оттяжкой
+ * @property nodeB : NodeOfCurve - конечная точка с оттяжкой
+ * @property crossing : Array<SegmentPoint> - отмеченные точки на кривой (возможно - точки пересечения с другими)
+ * @property master : (undefined|{segment:<Segment>, a:<Number>, b:Number}) - ссылка на исходный сегмент, частью которого является данный
+ * @property excluded : Boolean - признак, что сегмент не участвует в цепочке, на которую ссылаются его узлы
+ * @property actual : ? - ссылка на актуальную замену
+ */
 class Segment{
 	constructor(nodeA, nodeB){
 		Object.defineProperties(this,{
@@ -23,16 +37,12 @@ class Segment{
 				enumerable:true,
 				writable:false,
 				value:nodeB
-			},
-			crossing:{
-				configurable:true,
-				enumerable:false,
-				writable:false,
-				value:[]
 			}
 		});
 		//this.nodeA = nodeA;
 		//this.nodeB = nodeB;
+		
+		this.crossing = [];
 		
 		nodeA.segment = this;
 		nodeB.segment = this;
@@ -61,30 +71,115 @@ class Segment{
 	self_replace(struct){
 		this.nodeA.self_replace(struct.nodeA);
 		this.nodeB.self_replace(struct.nodeB);
+
 		this.excluded = true;
 		return struct;
+	}
+	
+	/**
+	 * Находит начало и конец
+	 */
+	get actual(){
+		return {
+			nodeA:this.nodeA.actual,
+			nodeB:this.nodeB.actual
+		};
 	}
 	
 	/**
 	 * Разбивает сегмент на два сцепленных сегмента
 	 */
 	split(t){
-		let curves = this.points.split(t);
+		let [p, q] = this.points.split(t);
 		
-		let segs = Segment.reconstruction(curves);
+		let A = Segment.makeCubic(...p);
+		let B = Segment.makeCubic(...q);
+		A.nodeB.connect(B.nodeA);
 		
-		this.self_replace(segs);
+		let master = this.master || {segment:this, a:0, b:1};
+		let absT = propAbsolute(master.a, master.b)(t);
+	
+		A.master = {segment:master.segment, a:master.a, b:absT};
+		B.master = {segment:master.segment, a:absT, b:master.b};		
+		
+		this.self_replace({nodeA:A.nodeA, nodeB:B.nodeB});
+		
+		return [A, B];
 	}
 	
+	splits(tt){
+		let pp = this.points.splits(tt);
+		let master = this.master || {segment:this, a:0, b:1};
+		let toAbs = propAbsolute(master.a, master.b);
+		let limits = [0, ...tt, 1].map(toAbs);
+		
+		let struct = Segment.reconstruction(pp, false, 
+			(segment, i)=>{
+				segment.master = {segment:master.segment, a:limits[i], b:limits[i+1]};
+			}
+		);
+		
+		this.self_replace(struct);
+		
+		return struct.segments;
+	}
+	
+	/**
+	 * Явная команда унаследовать точки от мастера
+	 */
+	inheritPoints(master){
+		let {a, b, segment} = master || this.master;
+		let filter = propFilter(a,b), toRel = propRelative(a, b);
+		
+		let points = segment.crossing.filter(p=>filter(p.t)).map((p)=>(p.self_replace(this, toRel(p.t))));
+		
+		this.crossing.push(...points);
+	}
+	
+	/**
+	 * Команда очистить список пересечений от повторов
+	 */
+	filterPoints(){
+		this.crossing = SegmentPoint.filterArray(this.crossing);
+		
+		let prev = this.nodeA.sibling && this.nodeA.sibling.segment;
+		let next = this.nodeB.sibling && this.nodeB.sibling.segment;
+		
+		if(this.crossing.length>0){
+			//Удаление из списка узла B
+			this.crossing.sort((a,b)=>(b.t-a.t));
+			let p = this.crossing[0];
+			while(p.t>1023/1024 && p.segment === next){
+				this.crossing.shift();
+				p = this.crossing[0];
+			}			
+			
+			//Удаление из списка узла A
+			this.crossing.sort((a,b)=>(a.t-b.t));
+			p = this.crossing[0];
+			while(p.t<1/1024 && p.segment === prev){
+				this.crossing.shift();
+				p = this.crossing[0];
+			}			
+		}
+	}
 
 	
 	isLine(){
+		let {nodeA, nodeB} = this;
 		//Сегмент линеен, если все три части ломаной коллинеарны
 		return nodeA.V.cross(nodeB.V) === 0 && nodeA.A.sub(nodeB.A).cross(nodeA.V) === 0;
 	}
 	
+	toLongAdd(s){
+		let len = this.nodeA.A.sub(this.nodeB.A).abs();
+		
+		this.toLong(len+s);
+	}
+	
 	toLong(s){
 		if(this.isLine()){
+			let {nodeA, nodeB} = this;
 			let free, stat;
 			if(!nodeB.sibling){
 				free = nodeB;
@@ -130,8 +225,12 @@ class Segment{
 				value:nodeA
 			}
 		});
-		//this.nodeA = nodeB;
-		//this.nodeB = nodeA;
+
+		this.crossing.forEach((point)=>{
+			point.t = 1 - point.t;
+		});
+		this.crossing.sort((a,b)=>(a.t - b.t));
+
 		
 		return this;
 	}
@@ -272,20 +371,25 @@ Segment.makeCubic = function(A, M, N, B){
 /**
  * Создаёт последовательность сцепленных сегментов
  */
-Segment.reconstruction = function(curves, close){
+Segment.reconstruction = function(curves, close, callback){
 	const first = Segment.makeCubic(...curves[0]);
+	const segments = [];
 	const len = curves.length;
 	let prev = first;
+	callback && callback(prev, 0);
+	segments.push(prev);
 	for(let i=1; i<len; ++i){
 		let current = Segment.makeCubic(...curves[i]);
 		prev.nodeB.connect(current.nodeA);
 		prev = current;
+		callback && callback(prev, i);
+		segments.push(prev);
 	}
 	const last = prev;
 	if(close){
 		prev.nodeB.connect(first.nodeA);
 	}
-	return {nodeA:first.nodeA, nodeB:last.nodeB};	
+	return {nodeA:first.nodeA, nodeB:last.nodeB, segments};	
 }
 
 module.exports = Segment;

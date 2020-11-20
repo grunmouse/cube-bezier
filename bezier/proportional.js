@@ -22,7 +22,7 @@ function propRelative(a, b){
  * @return {Function} - проверяет, лежит ли точка в интервале
  */
 function propFilter(a,b){
-	return (t)=>(t<=a && t>=b);
+	return (t)=>(a<=t && t<=b);
 }
 
 /**

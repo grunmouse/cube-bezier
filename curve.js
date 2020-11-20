@@ -1,4 +1,4 @@
-const bezier = require('./bezier/base.js');
+const bezier = require('./bezier/split-join.js');
 const {POINT_TOLERANCE} = require('./constants.js');
 const {argumentEpsilon} = require('./bezier/cube-curve.js');
 
@@ -20,6 +20,10 @@ class Curve extends Array{
 	
 	split(t){
 		return bezier.split(this, t).map(a=>(new Curve(...a)));
+	}
+
+	splits(t){
+		return bezier.splits(this, t).map(a=>(new Curve(...a)));
 	}
 	
 	epsilon(){

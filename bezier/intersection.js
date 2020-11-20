@@ -55,9 +55,12 @@ function *intersectCurves(A, B){
 	
 	const detS = resultant(cAx, cAy, cBx, cBy);
 	
-	//Находим из результанта аргумент второй кривой
-	let roots = detS.realRoots(1e-9).filter((a)=>(a>=0 && a<=1));
+	console.log(detS);
 	
+	//Находим из результанта аргумент второй кривой
+	let roots = detS.realRoots(1e-9);//.filter((a)=>(a>=0 && a<=1));
+	console.log(roots);
+	//console.log(roots);
 	/* 
 		Примем соглашение называть аргумент второй кривой буквой s, а первой - t
 	*/
@@ -72,17 +75,20 @@ function *intersectCurves(A, B){
 			относительно t.
 		*/
 		//Оба массива содержат возможные значения t, искомое значение одно и, вероятно, более-менее близко
-		let xRoots = pAx.addnew(-pBx.eval(s)).realRoots(1e-8).filter((a)=>(a>=0 && a<=1));
-        let yRoots = pAy.addnew(-pBy.eval(s)).realRoots(1e-8).filter((a)=>(a>=0 && a<=1));
-		
+		let xRoots = pAx.addnew(-pBx.eval(s)).realRoots(1e-8);//.filter((a)=>(a>=0 && a<=1));
+        let yRoots = pAy.addnew(-pBy.eval(s)).realRoots(1e-8);//.filter((a)=>(a>=0 && a<=1));
+		//console.log(pAx.addnew(-pBx.eval(s)));
+		//console.log(pAx.addnew(-pBx.eval(s)).realRoots());
 		/**
 		 * Это число я утащил у Kevin Lindsey, copyright 2002-2003
 		 * Вероятно, оно подобрано эмпирически
 		 */
 		let TOLERANCE = 1e-4;
-		
+		//console.log(s);
+		console.log(xRoots, yRoots);
 		//Итерируем примерное пересечение массивов
 		for(const t of approxCrossing(xRoots, yRoots, TOLERANCE, (a,b)=>((a+b)/2))){
+			//console.log(t);
 			/*
 			Ну вот, у нас есть s и t. И что с ними делать? Как возвращать?
 			*/

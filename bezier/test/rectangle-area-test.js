@@ -13,7 +13,8 @@ const {SquareMatrix2} = require('@grunmouse/math-matrix');
 const {
 	isIn,
 	rectangleArea,
-	intersectRectangle
+	intersectRectangle,
+	isIntersectRectangles
 } = require('../rectangle-area.js');
 
 describe('rectangle-area', ()=>{
@@ -41,5 +42,54 @@ describe('rectangle-area', ()=>{
 			assert.ok(isIn(P, conv), JSON.stringify({conv:conv.map(a=>([...a])), P:[...P]}));
 		}
 		return true;
+	});
+	
+	describe('matrixIntersectRectangles', ()=>{
+		it('case 1', ()=>{
+			let areas = [
+				[new Vector2(0,0), new Vector2(2,2)],
+				[new Vector2(1,1), new Vector2(3,3)]
+			];
+			
+			let mat = matrixIntersectRectangles(areas);
+			
+			return mat.value(0,1)===1 && mat.value(1, 0)===1;
+		});
+		
+		it('case 2', ()=>{
+			let areas = [
+				[new Vector2(0,1), new Vector2(2,3)],
+				[new Vector2(1,0), new Vector2(3,2)]
+			];
+			
+			let mat = matrixIntersectRectangles(areas);
+			
+			return mat.value(0,1)===1 && mat.value(1, 0)===1;
+		});		
+		it('case 3', ()=>{
+			let areas = [
+				[new Vector2(0,1), new Vector2(2,3)],
+				[new Vector2(1,0), new Vector2(3,2)],
+				[new Vector2(-1,-1), new Vector2(0,0)]
+			];
+			
+			let mat = matrixIntersectRectangles(areas);
+			
+			//console.log(mat);
+			
+			return mat.value(0,1)===1 && mat.value(1, 0)===1 && mat.value(1,2) ===0 && mat.value(0,2)===0;
+		});
+
+		it('case 4', ()=>{
+			let areas = [
+				[new Vector2(0,0), new Vector2(3,3)],
+				[new Vector2(2,2), new Vector2(5,5)],
+				[new Vector2(0,4), new Vector2(3,7)]
+			];
+			
+			let mat = matrixIntersectRectangles(areas);
+			
+			return mat.value(0,1)===1 && mat.value(1, 2)===1 && mat.value(1,2) ===0;
+		});
 	});
 });

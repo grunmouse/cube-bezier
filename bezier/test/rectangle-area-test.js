@@ -14,7 +14,7 @@ const {
 	isIn,
 	rectangleArea,
 	intersectRectangle,
-	isIntersectRectangles
+	matrixIntersectRectangles
 } = require('../rectangle-area.js');
 
 describe('rectangle-area', ()=>{

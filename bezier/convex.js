@@ -1,12 +1,9 @@
 const  {
-	delta,
-	odelta,
-	proj
+	odelta
 } = require('./base.js');
 
 const {
-	opairs,
-	pairs
+	opairs
 } = require('./iterators.js');
 
 

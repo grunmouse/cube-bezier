@@ -18,6 +18,8 @@ $$\vec e_{i} = \mathrm{ort} \vec s_{i} = \begin{pmatrix}
 1 & 0
 \end{pmatrix} \mathrm{ort} \Delta B_i;$$
 
+$\vec e_{i}$ нормален к $\Delta B_i$.
+
 Найдём вектор $\vec r_i$ из четырёхугольника, образованного точками:
 $$\begin{gathered}
 B_i, \\

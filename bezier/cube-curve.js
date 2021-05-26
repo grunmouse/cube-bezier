@@ -54,7 +54,7 @@ function aphineAD(B){
 function getKPoints(B){
 	let dotB = dot(B); //Опорные точки первой производной
 	let ddotB = dot(dotB); //Опорные точки второй производной
-	
+	//Сверить с документом
 	let K = [
 		dotB[0].cross(ddotB[0]),
 		(dotB[0].cross(ddotB[1])+2*dotB[1].cross(ddotB[0]))/3,
